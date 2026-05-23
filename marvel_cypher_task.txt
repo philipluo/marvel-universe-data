@@ -1,0 +1,53 @@
+# Marvel Universe Graph Database — Cypher Data Collection Project
+
+## Overview
+Long-term autonomous project: collect Marvel Universe entities (characters, teams, locations, events, movies) from public web sources and convert them into Neo4j-ready Cypher MERGE statements.
+
+## Data Model
+
+### Node Labels
+- `Character` {name, real_name?, species?, first_appearance?}
+- `Team` {name, type?}
+- `Location` {name, type?}
+- `Event` {name, year?}
+- `Movie` {title, year}
+- `Power` {name}
+- `Item` {name, type?}
+
+### Relationship Types
+- (Character)-[:MEMBER_OF]->(Team)
+- (Character)-[:ALLY_OF]->(Character)
+- (Character)-[:ENEMY_OF]->(Character)
+- (Character)-[:RELATIVE_OF]->(Character)
+- (Character)-[:HAS_POWER]->(Power)
+- (Character)-[:USES]->(Item)
+- (Character)-[:FROM]->(Location)
+- (Character)-[:APPEARS_IN]->(Movie)
+- (Movie)-[:HAS_EVENT]->(Event)
+- (Team)-[:BASED_IN]->(Location)
+
+## Cypher Rules (STRICT)
+1. **MERGE only** — never use CREATE (prevents duplicates)
+2. **Escape special chars** — use `\'` for single quotes in values
+3. **Semicolon at end** — each statement ends with `;`
+4. **Variable aliases** — use short names: c1, t1, l1, e1, m1, p1, i1
+
+## Collection Batches (execution order)
+1. Core Avengers (Iron Man, Captain America, Thor, Hulk, Black Widow, Hawkeye, etc.)
+2. X-Men (Professor X, Wolverine, Storm, Jean Grey, Magneto, etc.)
+3. Villains (Thanos, Loki, Red Skull, Green Goblin, Doctor Doom, etc.)
+4. Teams & Organizations (S.H.I.E.L.D., X-Men, Fantastic Four, Guardians, etc.)
+5. Locations (Asgard, Wakanda, Latveria, etc.)
+6. Movies & Events (Infinity War, Endgame, Blip, etc.)
+7. Powers & Items (Infinity Stones, Mjolnir, Cap's Shield, etc.)
+8. Expanded characters (Spider-Man, Doctor Strange, Black Panther, etc.)
+9. Supporting characters & relatives
+10. Deeper relationships (alliances, rivalries)
+
+## Files
+- `marvel_graph_data/import_data.cypher` — main Cypher output (append only)
+- `marvel_graph_data/telemetry_log.csv` — collection metrics
+- `scripts/marvel_helper.py` — validation/dedup helper
+
+## Cronjob
+Runs every 4 hours. Each run collects one batch, validates, appends, and logs.

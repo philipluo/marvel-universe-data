@@ -1,0 +1,1787 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+         http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d0" for="node" attr.name="label" attr.type="string"/>
+  <key id="d1" for="node" attr.name="name" attr.type="string"/>
+  <key id="d2" for="node" attr.name="name_cn" attr.type="string"/>
+  <key id="d3" for="node" attr.name="species" attr.type="string"/>
+  <key id="d4" for="node" attr.name="real_name" attr.type="string"/>
+  <key id="d5" for="node" attr.name="abilities" attr.type="string"/>
+  <key id="d6" for="node" attr.name="type" attr.type="string"/>
+  <key id="d7" for="node" attr.name="year" attr.type="string"/>
+  <key id="d8" for="node" attr.name="title" attr.type="string"/>
+  <key id="d9" for="node" attr.name="event_name" attr.type="string"/>
+  <key id="d10" for="node" attr.name="item_name" attr.type="string"/>
+  <key id="d11" for="node" attr.name="first_appearance" attr.type="string"/>
+  <key id="d12" for="node" attr.name="description" attr.type="string"/>
+  <key id="d13" for="edge" attr.name="relation" attr.type="string"/>
+  <node id="c1">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Iron Man</data>
+    <data key="d2">钢铁侠</data>
+    <data key="d3">人类</data>
+    <data key="d4">Anthony Edward Tony Stark</data>
+    <data key="d5">天才级智力, 动力装甲, 飞行, 冲击射线, 装甲强化力量</data>
+  </node>
+  <node id="c2">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Captain America</data>
+    <data key="d2">美国队长</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Steve Rogers</data>
+    <data key="d5">超人类力量, 敏捷, 速度, 耐力, 大师级战术家, 振金盾牌专家</data>
+  </node>
+  <node id="c3">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Thor</data>
+    <data key="d2">雷神</data>
+    <data key="d3">阿斯加德人</data>
+    <data key="d4">Thor Odinson</data>
+    <data key="d5">超人类力量, 天气控制, 雷电操控, 飞行 （妙尔尼尔）, 延长寿命</data>
+  </node>
+  <node id="c4">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Hulk</data>
+    <data key="d2">浩克</data>
+    <data key="d3">人类（伽马突变）</data>
+    <data key="d4">Bruce Banner</data>
+    <data key="d5">无限力量, 再生治愈因子, 超人类耐力, 天才智力</data>
+  </node>
+  <node id="c5">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Black Widow</data>
+    <data key="d2">黑寡妇</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Natasha Romanoff</data>
+    <data key="d5">大师级间谍, 武术专家, 延缓衰老, 武器专家, 红房训练</data>
+  </node>
+  <node id="c6">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Hawkeye</data>
+    <data key="d2">鹰眼</data>
+    <data key="d3">人类</data>
+    <data key="d4">Clint Barton</data>
+    <data key="d5">大师级弓箭手, 神枪手, 大师级战术家, 徒手格斗, 特制箭矢</data>
+  </node>
+  <node id="c7">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Nick Fury</data>
+    <data key="d2">尼克·弗瑞</data>
+    <data key="d3">人类</data>
+    <data key="d4">Nicholas Joseph Fury</data>
+    <data key="d5">大师级战略家, 战斗专家, 间谍大师, 领导力</data>
+  </node>
+  <node id="t1">
+    <data key="d0">TEAM</data>
+    <data key="d1">Avengers</data>
+    <data key="d6">超级英雄团队</data>
+  </node>
+  <node id="t2">
+    <data key="d0">TEAM</data>
+    <data key="d1">S.H.I.E.L.D.</data>
+    <data key="d6">情报机构</data>
+  </node>
+  <node id="t3">
+    <data key="d0">TEAM</data>
+    <data key="d1">Stark Industries</data>
+    <data key="d6">科技公司</data>
+  </node>
+  <node id="i1">
+    <data key="d0">ITEM</data>
+    <data key="d10">振金盾牌</data>
+    <data key="d6">武器/防御</data>
+  </node>
+  <node id="i2">
+    <data key="d0">ITEM</data>
+    <data key="d10">妙尔尼尔（雷神之锤）</data>
+    <data key="d6">武器</data>
+  </node>
+  <node id="i3">
+    <data key="d0">ITEM</data>
+    <data key="d10">钢铁侠战甲</data>
+    <data key="d6">动力装甲</data>
+  </node>
+  <node id="i4">
+    <data key="d0">ITEM</data>
+    <data key="d10">弧反应堆</data>
+    <data key="d6">能源核心</data>
+  </node>
+  <node id="i5">
+    <data key="d0">ITEM</data>
+    <data key="d10">寡妇之吻</data>
+    <data key="d6">武器</data>
+  </node>
+  <node id="i6">
+    <data key="d0">ITEM</data>
+    <data key="d10">鹰眼弓</data>
+    <data key="d6">武器</data>
+  </node>
+  <node id="i7">
+    <data key="d0">ITEM</data>
+    <data key="d10">特制箭矢</data>
+    <data key="d6">弹药</data>
+  </node>
+  <node id="l1">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Asgard</data>
+    <data key="d6">维度</data>
+  </node>
+  <node id="l2">
+    <data key="d0">LOCATION</data>
+    <data key="d1">New York City</data>
+    <data key="d6">城市</data>
+  </node>
+  <node id="l3">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Avengers Tower</data>
+    <data key="d6">总部</data>
+  </node>
+  <node id="c100">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Spider-Man</data>
+    <data key="d2">蜘蛛侠</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Peter Parker</data>
+    <data key="d5">壁虎攀爬, 超人类力量, 蜘蛛感应, 摆荡</data>
+  </node>
+  <node id="c101">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Doctor Strange</data>
+    <data key="d2">奇异博士</data>
+    <data key="d3">人类</data>
+    <data key="d4">Stephen Strange</data>
+    <data key="d5">秘术大师, 时间操控, 灵体投射, 传送</data>
+  </node>
+  <node id="c102">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Black Panther</data>
+    <data key="d2">黑豹</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">T'Challa</data>
+    <data key="d5">超人类力量 （心形草）, 天才智力, 振金战衣, 战斗大师</data>
+  </node>
+  <node id="c103">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Captain Marvel</data>
+    <data key="d2">惊奇队长</data>
+    <data key="d3">人类/克里混血</data>
+    <data key="d4">Carol Danvers</data>
+    <data key="d5">超人类力量, 飞行, 能量投射, 光子冲击, 宇宙感知</data>
+  </node>
+  <node id="c104">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Ant-Man</data>
+    <data key="d2">蚁人</data>
+    <data key="d3">人类</data>
+    <data key="d4">Scott Lang</data>
+    <data key="d5">大小操控, 昆虫沟通, 超人类力量 when small</data>
+  </node>
+  <node id="c105">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Scarlet Witch</data>
+    <data key="d2">绯红女巫</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Wanda Maximoff</data>
+    <data key="d5">现实扭曲, 混沌魔法, 念力, 心灵操控</data>
+  </node>
+  <node id="c106">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Falcon</data>
+    <data key="d2">猎鹰</data>
+    <data key="d3">人类</data>
+    <data key="d4">Sam Wilson</data>
+    <data key="d5">飞行 via mechanical wings, 鸟类心灵链接, 战斗专家</data>
+  </node>
+  <node id="c107">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">War Machine</data>
+    <data key="d2">战争机器</data>
+    <data key="d3">人类</data>
+    <data key="d4">James Rhodes</data>
+    <data key="d5">动力装甲, 飞行, 多种武器系统, 超人类力量</data>
+  </node>
+  <node id="c200">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Professor X</data>
+    <data key="d2">X教授</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Charles Xavier</data>
+    <data key="d5">心灵感应, 心灵控制, 精神投射, 天才智力</data>
+  </node>
+  <node id="c201">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Cyclops</data>
+    <data key="d2">镭射眼</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Scott Summers</data>
+    <data key="d5">光学冲击, 战术专家, 领导力</data>
+  </node>
+  <node id="c202">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Wolverine</data>
+    <data key="d2">金刚狼</data>
+    <data key="d3">变种人（强化）</data>
+    <data key="d4">James Logan Howlett</data>
+    <data key="d5">治愈因子, 艾德曼合金爪, 超人类感官, 强化力量</data>
+  </node>
+  <node id="c203">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Storm</data>
+    <data key="d2">暴风女</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Ororo Munroe</data>
+    <data key="d5">天气控制, 飞行, 雷电操控</data>
+  </node>
+  <node id="c204">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Jean Grey</data>
+    <data key="d2">琴·葛雷</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Jean Grey</data>
+    <data key="d5">心灵感应, 念力, 凤凰之力连接</data>
+  </node>
+  <node id="c205">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Magneto</data>
+    <data key="d2">万磁王</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Erik Lehnsherr</data>
+    <data key="d5">磁力操控, 磁力力场, 飞行, 金属操控</data>
+  </node>
+  <node id="c206">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Beast</data>
+    <data key="d2">野兽</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Henry McCoy</data>
+    <data key="d5">超人类敏捷, 天才智力, 强化力量, 利爪</data>
+  </node>
+  <node id="c207">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Iceman</data>
+    <data key="d2">冰人</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Bobby Drake</data>
+    <data key="d5">冷冻能力, 冰形态变换, 降温</data>
+  </node>
+  <node id="c208">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Angel</data>
+    <data key="d2">天使</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Warren Worthington III</data>
+    <data key="d5">飞行, 翼飞行, 羽毛投射</data>
+  </node>
+  <node id="c300">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Thanos</data>
+    <data key="d2">灭霸</data>
+    <data key="d3">永恒族（变异者）</data>
+    <data key="d4"></data>
+    <data key="d5">超人类力量, 耐力, 天才智力, 能量操控</data>
+  </node>
+  <node id="c301">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Loki</data>
+    <data key="d2">洛基</data>
+    <data key="d3">霜巨人</data>
+    <data key="d4"></data>
+    <data key="d5">魔法, 变形, 幻术, 超人类力量</data>
+  </node>
+  <node id="c302">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Doctor Doom</data>
+    <data key="d2">毁灭博士</data>
+    <data key="d3">人类</data>
+    <data key="d4">Victor Von Doom</data>
+    <data key="d5">天才智力, 巫术, 动力装甲, 外交豁免权</data>
+  </node>
+  <node id="c303">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Green Goblin</data>
+    <data key="d2">绿妖</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Norman Osborn</data>
+    <data key="d5">超人类力量, 强化智力, 绿妖公式效果, 先进装备</data>
+  </node>
+  <node id="c304">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Red Skull</data>
+    <data key="d2">红骷髅</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Johann Schmidt</data>
+    <data key="d5">战略天才, 战斗训练, 宇宙射线强化体质</data>
+  </node>
+  <node id="c305">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Ultron</data>
+    <data key="d2">奥创</data>
+    <data key="d3">人工智能</data>
+    <data key="d4"></data>
+    <data key="d5">超人类力量, 再生, 飞行, 能量投射, 心灵控制</data>
+  </node>
+  <node id="c306">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Venom</data>
+    <data key="d2">毒液</data>
+    <data key="d3">共生体宿主</data>
+    <data key="d4">Eddie Brock</data>
+    <data key="d5">超人类力量, 变形, 伪装, 蜘蛛感应 disruption</data>
+  </node>
+  <node id="l10">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Wakanda</data>
+    <data key="d6">国家</data>
+  </node>
+  <node id="l11">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Latveria</data>
+    <data key="d6">国家</data>
+  </node>
+  <node id="l12">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Genosha</data>
+    <data key="d6">岛国</data>
+  </node>
+  <node id="l13">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Knowhere</data>
+    <data key="d6">太空地点</data>
+  </node>
+  <node id="l14">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Titan</data>
+    <data key="d6">卫星</data>
+  </node>
+  <node id="l15">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Xavier Mansion</data>
+    <data key="d6">学校</data>
+  </node>
+  <node id="l16">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Sanctum Sanctorum</data>
+    <data key="d6">神秘建筑</data>
+  </node>
+  <node id="l17">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Stark Tower</data>
+    <data key="d6">总部</data>
+  </node>
+  <node id="m1">
+    <data key="d0">MOVIE</data>
+    <data key="d8">钢铁侠</data>
+    <data key="d7">2008</data>
+  </node>
+  <node id="m2">
+    <data key="d0">MOVIE</data>
+    <data key="d8">复仇者联盟</data>
+    <data key="d7">2012</data>
+  </node>
+  <node id="m3">
+    <data key="d0">MOVIE</data>
+    <data key="d8">银河护卫队</data>
+    <data key="d7">2014</data>
+  </node>
+  <node id="m4">
+    <data key="d0">MOVIE</data>
+    <data key="d8">奇异博士</data>
+    <data key="d7">2016</data>
+  </node>
+  <node id="m5">
+    <data key="d0">MOVIE</data>
+    <data key="d8">黑豹</data>
+    <data key="d7">2018</data>
+  </node>
+  <node id="m6">
+    <data key="d0">MOVIE</data>
+    <data key="d8">复仇者联盟：无限战争</data>
+    <data key="d7">2018</data>
+  </node>
+  <node id="m7">
+    <data key="d0">MOVIE</data>
+    <data key="d8">复仇者联盟：终局之战</data>
+    <data key="d7">2019</data>
+  </node>
+  <node id="m8">
+    <data key="d0">MOVIE</data>
+    <data key="d8">蜘蛛侠：英雄无归</data>
+    <data key="d7">2021</data>
+  </node>
+  <node id="e1">
+    <data key="d0">EVENT</data>
+    <data key="d9">纽约之战</data>
+    <data key="d7">2012</data>
+  </node>
+  <node id="e2">
+    <data key="d0">EVENT</data>
+    <data key="d9">索科维亚之战</data>
+    <data key="d7">2015</data>
+  </node>
+  <node id="e3">
+    <data key="d0">EVENT</data>
+    <data key="d9">无限战争</data>
+    <data key="d7">2018</data>
+  </node>
+  <node id="e4">
+    <data key="d0">EVENT</data>
+    <data key="d9">弹指事件</data>
+    <data key="d7">2018</data>
+  </node>
+  <node id="e5">
+    <data key="d0">EVENT</data>
+    <data key="d9">内战</data>
+    <data key="d7">2016</data>
+  </node>
+  <node id="e6">
+    <data key="d0">EVENT</data>
+    <data key="d9">秘密战争</data>
+    <data key="d7">1984</data>
+  </node>
+  <node id="i100">
+    <data key="d0">ITEM</data>
+    <data key="d10">空间宝石</data>
+    <data key="d6">无限宝石</data>
+  </node>
+  <node id="i101">
+    <data key="d0">ITEM</data>
+    <data key="d10">心灵宝石</data>
+    <data key="d6">无限宝石</data>
+  </node>
+  <node id="i102">
+    <data key="d0">ITEM</data>
+    <data key="d10">现实宝石</data>
+    <data key="d6">无限宝石</data>
+  </node>
+  <node id="i103">
+    <data key="d0">ITEM</data>
+    <data key="d10">力量宝石</data>
+    <data key="d6">无限宝石</data>
+  </node>
+  <node id="i104">
+    <data key="d0">ITEM</data>
+    <data key="d10">时间宝石</data>
+    <data key="d6">无限宝石</data>
+  </node>
+  <node id="i105">
+    <data key="d0">ITEM</data>
+    <data key="d10">灵魂宝石</data>
+    <data key="d6">无限宝石</data>
+  </node>
+  <node id="i106">
+    <data key="d0">ITEM</data>
+    <data key="d10">无限手套</data>
+    <data key="d6">神器</data>
+  </node>
+  <node id="c400">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Star-Lord</data>
+    <data key="d2">星爵</data>
+    <data key="d3">人类/天神族混血</data>
+    <data key="d4">Peter Quill</data>
+    <data key="d5">神枪手, 大师级战术家, 强化耐力, 喷射靴</data>
+  </node>
+  <node id="c401">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Gamora</data>
+    <data key="d2">卡魔拉</data>
+    <data key="d3">泽恩-沃伯里人</data>
+    <data key="d4">Gamora Zen-Whoberi</data>
+    <data key="d5">超人类力量, 敏捷, 治愈因子, 刺客大师, 剑术</data>
+  </node>
+  <node id="c402">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Drax</data>
+    <data key="d2">毁灭者德拉克斯</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Drax the Destroyer</data>
+    <data key="d5">超人类力量, 耐力, 战斗专家, 再生</data>
+  </node>
+  <node id="c403">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Rocket Raccoon</data>
+    <data key="d2">火箭浣熊</data>
+    <data key="d3">基因改造浣熊</data>
+    <data key="d4">Rocket</data>
+    <data key="d5">天才智力, 神枪手, 战术天才, 武器大师</data>
+  </node>
+  <node id="c404">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Groot</data>
+    <data key="d2">格鲁特</data>
+    <data key="d3">植物巨人</data>
+    <data key="d4">Groot</data>
+    <data key="d5">超人类力量, 再生, 身体操控, 植物操控</data>
+  </node>
+  <node id="c405">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Mantis</data>
+    <data key="d2">螳螂女</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Mantis</data>
+    <data key="d5">共情, 情绪操控, 催眠, 武术</data>
+  </node>
+  <node id="c406">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Nebula</data>
+    <data key="d2">星云</data>
+    <data key="d3">卢福莫伊人</data>
+    <data key="d4">Nebula</data>
+    <data key="d5">机械增强, 超人类力量, 战斗专家, 变形</data>
+  </node>
+  <node id="c500">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Mister Fantastic</data>
+    <data key="d2">神奇先生</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Reed Richards</data>
+    <data key="d5">天才智力, 弹性, 伸展, 科学天才</data>
+  </node>
+  <node id="c501">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Invisible Woman</data>
+    <data key="d2">隐形女</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Susan Storm</data>
+    <data key="d5">隐形, 力场, 能量投射</data>
+  </node>
+  <node id="c502">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">人类 Torch</data>
+    <data key="d2">霹雳火</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Johnny Storm</data>
+    <data key="d5">火系能力, 飞行, 火焰操控, 无敌</data>
+  </node>
+  <node id="c503">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">The Thing</data>
+    <data key="d2">石头人</data>
+    <data key="d3">人类（岩石形态）</data>
+    <data key="d4">Ben Grimm</data>
+    <data key="d5">超人类力量, 岩石, 耐力, 徒手搏斗</data>
+  </node>
+  <node id="c600">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Mary Jane Watson</data>
+    <data key="d2">玛丽·简·沃森</data>
+    <data key="d3">人类</data>
+    <data key="d4">Mary Jane Watson</data>
+    <data key="d5">表演, 摄影, 社交技巧</data>
+  </node>
+  <node id="c601">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">J. Jonah Jameson</data>
+    <data key="d2">J·乔纳·詹姆森</data>
+    <data key="d3">人类</data>
+    <data key="d4">John Jonah Jameson</data>
+    <data key="d5">媒体大亨, 商业敏锐</data>
+  </node>
+  <node id="c602">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Doc Ock</data>
+    <data key="d2">章鱼博士</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Otto Octavius</data>
+    <data key="d5">天才智力, 机械触手, 超人类力量 via apparatus</data>
+  </node>
+  <node id="c603">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Sandman</data>
+    <data key="d2">沙人</data>
+    <data key="d3">人类（硅基）</data>
+    <data key="d4">Flint Marko</data>
+    <data key="d5">身体操控, 沙形, 超人类力量, 再生</data>
+  </node>
+  <node id="c604">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Electro</data>
+    <data key="d2">电光人</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Max Dillon</data>
+    <data key="d5">电力生成, 能量吸收, 飞行 via electricity</data>
+  </node>
+  <node id="c605">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Lizard</data>
+    <data key="d2">蜥蜴人</data>
+    <data key="d3">人类/爬行动物混血</data>
+    <data key="d4">Curt Connors</data>
+    <data key="d5">超人类力量, 再生, 尾巴, 史前本能</data>
+  </node>
+  <node id="c606">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Vulture</data>
+    <data key="d2">秃鹫</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Adrian Toomes</data>
+    <data key="d5">飞行 via wing suit, 天才智力, 拾荒科技</data>
+  </node>
+  <node id="c607">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Kingpin</data>
+    <data key="d2">金并</data>
+    <data key="d3">人类</data>
+    <data key="d4">Wilson Fisk</data>
+    <data key="d5">人类巅峰 strength, 犯罪天才, 政治影响力</data>
+  </node>
+  <node id="c608">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Punisher</data>
+    <data key="d2">惩罚者</data>
+    <data key="d3">人类</data>
+    <data key="d4">Frank Castle</data>
+    <data key="d5">神枪手, 军事训练, 战术天才, 武器大师</data>
+  </node>
+  <node id="c609">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Daredevil</data>
+    <data key="d2">夜魔侠</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Matt Murdock</data>
+    <data key="d5">雷达感官, 强化感官, 武术大师, 杂技技巧</data>
+  </node>
+  <node id="c610">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Elektra</data>
+    <data key="d2">艾蕾克特拉</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Elektra Natchios</data>
+    <data key="d5">刺客大师, 剑术, 武术, 潜行</data>
+  </node>
+  <node id="c700">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Rogue</data>
+    <data key="d2">罗根</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Anna Marie</data>
+    <data key="d5">力量吸收, 超人类力量, 飞行, 生命吸取</data>
+  </node>
+  <node id="c701">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Gambit</data>
+    <data key="d2">牌皇</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Remy LeBeau</data>
+    <data key="d5">动能充能, 牌术, 武术, 魅力</data>
+  </node>
+  <node id="c702">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Colossus</data>
+    <data key="d2">钢力士</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Piotr Rasputin</data>
+    <data key="d5">有机钢变形, 超人类力量, 耐力</data>
+  </node>
+  <node id="c703">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Nightcrawler</data>
+    <data key="d2">夜行者</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Kurt Wagner</data>
+    <data key="d5">传送, 杂技技巧, 卷尾, 潜行</data>
+  </node>
+  <node id="c704">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Psylocke</data>
+    <data key="d2">灵蝶</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Betsy Braddock</data>
+    <data key="d5">心灵感应, 心灵之刃, 武术, 忍者训练</data>
+  </node>
+  <node id="c705">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Cable</data>
+    <data key="d2"> Cable</data>
+    <data key="d3">变种人/改造</data>
+    <data key="d4">Nathan Summers</data>
+    <data key="d5">心灵感应, 念力, 改造强化, 武器大师, 时间旅行</data>
+  </node>
+  <node id="c707">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Emma Frost</data>
+    <data key="d2">白皇后</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Emma Frost</data>
+    <data key="d5">心灵感应, 钻石形态, 精神支配</data>
+  </node>
+  <node id="c708">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Sabretooth</data>
+    <data key="d2">剑齿虎</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Victor Creed</data>
+    <data key="d5">强化感官, 治愈因子, 利爪, 超人类力量</data>
+  </node>
+  <node id="c709">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Apocalypse</data>
+    <data key="d2">天启</data>
+    <data key="d3">变种人</data>
+    <data key="d4">En Sabah Nur</data>
+    <data key="d5">分子操控, 变形, 超人类力量, 不死</data>
+  </node>
+  <node id="c800">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Winter Soldier</data>
+    <data key="d2">冬日战士</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Bucky Barnes</data>
+    <data key="d5">神枪手, 机械臂, 武术, 刺客训练</data>
+  </node>
+  <node id="c802">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Quicksilver</data>
+    <data key="d2">快银</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Pietro Maximoff</data>
+    <data key="d5">超人类速度, 反射, 加速愈合</data>
+  </node>
+  <node id="c803">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Hercules</data>
+    <data key="d2">赫拉克勒斯</data>
+    <data key="d3">奥林匹斯神</data>
+    <data key="d4">Hercules Panhellenios</data>
+    <data key="d5">神明之力, 无敌, 武器大师, 不死</data>
+  </node>
+  <node id="c804">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Shang-Chi</data>
+    <data key="d2">尚气</data>
+    <data key="d3">人类</data>
+    <data key="d4">Shang-Chi</data>
+    <data key="d5">武术大师, 气操控, 战斗专家</data>
+  </node>
+  <node id="c805">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Blade</data>
+    <data key="d2">刀锋战士</data>
+    <data key="d3">吸血鬼-人类混血</data>
+    <data key="d4">Eric Brooks</data>
+    <data key="d5">吸血鬼之力, 太阳能吸收, 剑术, 免疫吸血鬼弱点</data>
+  </node>
+  <node id="c806">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Ghost Rider</data>
+    <data key="d2">恶灵骑士</data>
+    <data key="d3">人类（恶魔契约）</data>
+    <data key="d4">Johnny Blaze</data>
+    <data key="d5">地狱火, 忏悔凝视, 超自然力量, 摩托变形</data>
+  </node>
+  <node id="c900">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Captain Universe</data>
+    <data key="d2">宇宙队长</data>
+    <data key="d3">宇宙实体宿主</data>
+    <data key="d4">多种</data>
+    <data key="d5">宇宙之力s, 能量操控, 飞行, 超人类力量</data>
+  </node>
+  <node id="c901">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Silver Surfer</data>
+    <data key="d2">银影侠</data>
+    <data key="d3">人类/宇宙实体</data>
+    <data key="d4">Norrin Radd</data>
+    <data key="d5">宇宙之力 surfing, 能量操控, 飞行, 生理否定</data>
+  </node>
+  <node id="c902">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Galactus</data>
+    <data key="d2">行星吞噬者</data>
+    <data key="d3">宇宙实体</data>
+    <data key="d4">Galan</data>
+    <data key="d5">宇宙之力, 物质操控, 吞噬星球, 近</data>
+  </node>
+  <node id="c903">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Heralds of Galactus</data>
+    <data key="d2">行星吞噬者使者</data>
+    <data key="d3">多种</data>
+    <data key="d4">多种</data>
+    <data key="d5">宇宙之力s, 冲浪, 能量操控</data>
+  </node>
+  <node id="c910">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Luke Cage</data>
+    <data key="d2">卢克·凯奇</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Carl Lucas</data>
+    <data key="d5">超人类力量, 不坏之肤, 再生, 武术</data>
+  </node>
+  <node id="c911">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Iron Fist</data>
+    <data key="d2">铁拳</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Danny Rand</data>
+    <data key="d5">气之力, 铁拳攻击, 武术 master, 治愈</data>
+  </node>
+  <node id="c912">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Jessica Jones</data>
+    <data key="d2">杰西卡·琼斯</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Jessica Campbell Jones</data>
+    <data key="d5">超人类力量, 飞行, 侦探技巧, 心灵感应 resistance</data>
+  </node>
+  <node id="c913">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Moon Knight</data>
+    <data key="d2">月光骑士</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Marc Spector</data>
+    <data key="d5">人类体能巅峰, 武术, 弯月武器, 多重人格</data>
+  </node>
+  <node id="c914">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Shuri</data>
+    <data key="d2">舒莉</data>
+    <data key="d3">人类</data>
+    <data key="d4">Shuri</data>
+    <data key="d5">天才智力, 科技感应, 振金科技, 科学创新</data>
+  </node>
+  <node id="c915">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Okoye</data>
+    <data key="d2">奥科耶</data>
+    <data key="d3">人类</data>
+    <data key="d4">Okoye</data>
+    <data key="d5">武术大师, 长矛使用, 战略天才, 达奥·迈勒领袖</data>
+  </node>
+  <node id="c921">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Carnage</data>
+    <data key="d2">屠杀</data>
+    <data key="d3">共生体宿主</data>
+    <data key="d4">Cletus Kasady</data>
+    <data key="d5">超人类力量, 变形, 武器生成, 再生</data>
+  </node>
+  <node id="c922">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Mysterio</data>
+    <data key="d2">神秘客</data>
+    <data key="d3">人类</data>
+    <data key="d4">Quentin Beck</data>
+    <data key="d5">特效大师, 幻象创造, 无人机操控, 欺骗</data>
+  </node>
+  <node id="c923">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Mandarin</data>
+    <data key="d2">满大人</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Kang the Conqueror</data>
+    <data key="d5">戒指掌控, 不死, 能量投射, 战斗专长</data>
+  </node>
+  <node id="c930">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Hawkeye (Kate Bishop)</data>
+    <data key="d2">鹰眼(凯特·毕肖普)</data>
+    <data key="d3">人类</data>
+    <data key="d4">Kate Bishop</data>
+    <data key="d5">大师级弓箭手, 击剑, 徒手格斗, 天才级智力</data>
+  </node>
+  <node id="c931">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Wiccan</data>
+    <data key="d2">巫术</data>
+    <data key="d3">变种人</data>
+    <data key="d4">William Kaplan</data>
+    <data key="d5">现实扭曲, 魔法, 混沌魔法, 施法</data>
+  </node>
+  <node id="c932">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Speed</data>
+    <data key="d2">速度</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Thomas Maximoff</data>
+    <data key="d5">超人类速度, 强化反射, 速度之力连接</data>
+  </node>
+  <node id="c933">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Stature</data>
+    <data key="d2">巨化女</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Cassie Lang</data>
+    <data key="d5">大小操控, 缩小, 皮姆粒子</data>
+  </node>
+  <node id="c934">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Ned Leeds</data>
+    <data key="d2">内德·利兹</data>
+    <data key="d3">人类</data>
+    <data key="d4">Eddie Brock</data>
+    <data key="d5">科技天才, 忠诚, 摄影</data>
+  </node>
+  <node id="c941">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Ronan</data>
+    <data key="d2">罗南</data>
+    <data key="d3">克里人</data>
+    <data key="d4">Ronan the Accuser</data>
+    <data key="d5">宇宙感知, 锤子大师, 克里人 technology, 审判者训练</data>
+  </node>
+  <node id="c942">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Yondu</data>
+    <data key="d2">勇度</data>
+    <data key="d3">半人马座人</data>
+    <data key="d4">Yondu Udonta</data>
+    <data key="d5">亚卡箭操控, 领导力, 太空生存, 狩猎技巧</data>
+  </node>
+  <node id="c950">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Happy Hogan</data>
+    <data key="d2">快乐·霍根</data>
+    <data key="d3">人类</data>
+    <data key="d4">Harold Hogan</data>
+    <data key="d5">保镖训练, 驾驶, 忠诚伙伴</data>
+  </node>
+  <node id="c951">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Pepper Potts</data>
+    <data key="d2">佩珀·波茨</data>
+    <data key="d3">人类</data>
+    <data key="d4">Virginia Potts</data>
+    <data key="d5">商业敏锐, 管理, 智力, 工业领导</data>
+  </node>
+  <node id="c952">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">War Machine (James Rhodes)</data>
+    <data key="d2">战争机器(詹姆斯·罗德斯)</data>
+    <data key="d3">人类</data>
+    <data key="d4">James Rhodes</data>
+    <data key="d5">动力装甲, 飞行, 武器系统</data>
+  </node>
+  <node id="c953">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Ant-Man (Scott Lang)</data>
+    <data key="d2">蚁人(斯科特·朗)</data>
+    <data key="d3">人类</data>
+    <data key="d4">Scott Lang</data>
+    <data key="d5">大小操控, 昆虫沟通</data>
+  </node>
+  <node id="c954">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Wasp (Hope Van Dyne)</data>
+    <data key="d2">黄蜂女(霍普·范·戴恩)</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Hope Van Dyne</data>
+    <data key="d5">大小操控, 生物电冲击, 飞行, 武术</data>
+  </node>
+  <node id="c955">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Ant-Man (Hank Pym)</data>
+    <data key="d2">蚁人(汉克·皮姆)</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Henry Pym</data>
+    <data key="d5">大小操控, 皮姆粒子, 天才智力, 昆虫控制</data>
+  </node>
+  <node id="c960">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Kitty Pryde</data>
+    <data key="d2">浦瑞德</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Katherine Pryde</data>
+    <data key="d5">相位穿越, 虚化, 潜行, 电脑破解</data>
+  </node>
+  <node id="c961">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Mystique</data>
+    <data key="d2">魔形女</data>
+    <data key="d3">变种人</data>
+    <data key="d4">Raven Darkholme</data>
+    <data key="d5">变形, 延缓衰老, 强化敏捷, 间谍活动</data>
+  </node>
+  <node id="c962">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Sentry</data>
+    <data key="d2">信使</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Robert Reynolds</data>
+    <data key="d5">百万太阳爆炸之力, 飞行, 无敌, 分子重组</data>
+  </node>
+  <node id="c963">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Thunderbolt</data>
+    <data key="d2">雷鸣</data>
+    <data key="d3">人类</data>
+    <data key="d4">James Rhodes</data>
+    <data key="d5">军事训练, 领导力</data>
+  </node>
+  <node id="c970">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Ms. Marvel (Kamala Khan)</data>
+    <data key="d2">惊奇女士</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Kamala Khan</data>
+    <data key="d5">变形, 大小操控, 再生, 英雄决心</data>
+  </node>
+  <node id="c971">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Ironheart</data>
+    <data key="d2">钢铁之心</data>
+    <data key="d3">人类</data>
+    <data key="d4">Riri Williams</data>
+    <data key="d5">天才智力, 动力装甲, 工程学, 科学创新</data>
+  </node>
+  <node id="c972">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">She-Hulk</data>
+    <data key="d2">女浩克</data>
+    <data key="d3">人类（伽马突变）</data>
+    <data key="d4">Jennifer Walters</data>
+    <data key="d5">超人类力量, 耐力, 律师思维, 变形后保持智力</data>
+  </node>
+  <node id="c973">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Nighthawk</data>
+    <data key="d2">夜枭</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Dane Whitman</data>
+    <data key="d5">女巫之剑, 武术, 隐形斗篷, 天才智力</data>
+  </node>
+  <node id="c980">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Absorbing Man</data>
+    <data key="d2">吸收人</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Carl Creel</data>
+    <data key="d5">物质吸收, 力量复制, 无敌, 变形</data>
+  </node>
+  <node id="c981">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Crimson Cowl</data>
+    <data key="d2">深红兜帽</data>
+    <data key="d3">人类</data>
+    <data key="d4">未知</data>
+    <data key="d5">未知</data>
+  </node>
+  <node id="c982">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Taskmaster</data>
+    <data key="d2">任务大师</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Tony Masters</data>
+    <data key="d5">照片反射, 战斗模仿, 武术全才</data>
+  </node>
+  <node id="c983">
+    <data key="d0">CHARACTER</data>
+    <data key="d1">Crossbones</data>
+    <data key="d2">交叉骨</data>
+    <data key="d3">人类（强化）</data>
+    <data key="d4">Brock Rumlow</data>
+    <data key="d5">人类巅峰 strength, 战斗训练, 盾牌技巧, 暗杀</data>
+  </node>
+  <node id="t7">
+    <data key="d0">TEAM</data>
+    <data key="d1">Guardians of the Galaxy</data>
+    <data key="d6">太空团队</data>
+  </node>
+  <node id="t8">
+    <data key="d0">TEAM</data>
+    <data key="d1">Fantastic Four</data>
+    <data key="d6">超级英雄团队</data>
+  </node>
+  <node id="t9">
+    <data key="d0">TEAM</data>
+    <data key="d1">Defenders</data>
+    <data key="d6">超级英雄团队</data>
+  </node>
+  <node id="t10">
+    <data key="d0">TEAM</data>
+    <data key="d1">Heroes for Hire</data>
+    <data key="d6">雇佣兵团队</data>
+  </node>
+  <node id="t11">
+    <data key="d0">TEAM</data>
+    <data key="d1">Young Avengers</data>
+    <data key="d6">少年英雄团队</data>
+  </node>
+  <node id="t12">
+    <data key="d0">TEAM</data>
+    <data key="d1">Secret Avengers</data>
+    <data key="d6">秘密行动团队</data>
+  </node>
+  <node id="t13">
+    <data key="d0">TEAM</data>
+    <data key="d1">West Coast Avengers</data>
+    <data key="d6">地区团队</data>
+  </node>
+  <node id="t14">
+    <data key="d0">TEAM</data>
+    <data key="d1">A-Force</data>
+    <data key="d6">全女性团队</data>
+  </node>
+  <node id="t15">
+    <data key="d0">TEAM</data>
+    <data key="d1">New Avengers</data>
+    <data key="d6">超级英雄团队</data>
+  </node>
+  <node id="t16">
+    <data key="d0">TEAM</data>
+    <data key="d1">Savage Avengers</data>
+    <data key="d6">原始团队</data>
+  </node>
+  <node id="l20">
+    <data key="d0">LOCATION</data>
+    <data key="d1">New Atlantis</data>
+    <data key="d6">城市</data>
+  </node>
+  <node id="l21">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Hell's Kitchen</data>
+    <data key="d6">街区</data>
+  </node>
+  <node id="l23">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Xavier School</data>
+    <data key="d6">学校</data>
+  </node>
+  <node id="l24">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Baxter Building</data>
+    <data key="d6">总部</data>
+  </node>
+  <node id="l25">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Ravencroft Institute</data>
+    <data key="d6">精神病院</data>
+  </node>
+  <node id="l26">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Osborn Tower</data>
+    <data key="d6">总部</data>
+  </node>
+  <node id="l27">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Madripoor</data>
+    <data key="d6">岛国</data>
+  </node>
+  <node id="l28">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Sokovia</data>
+    <data key="d6">国家</data>
+  </node>
+  <node id="l29">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Wundagore Mountain</data>
+    <data key="d6">山脉</data>
+  </node>
+  <node id="l30">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Kamar-Taj</data>
+    <data key="d6">神秘学院</data>
+  </node>
+  <node id="l31">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Prison Raft</data>
+    <data key="d6">监狱</data>
+  </node>
+  <node id="l32">
+    <data key="d0">LOCATION</data>
+    <data key="d1">The Vault</data>
+    <data key="d6">监狱</data>
+  </node>
+  <node id="l33">
+    <data key="d0">LOCATION</data>
+    <data key="d1">Sanctum</data>
+    <data key="d6">神秘建筑</data>
+  </node>
+  <node id="m10">
+    <data key="d0">MOVIE</data>
+    <data key="d8">蜘蛛侠</data>
+    <data key="d7">2002</data>
+  </node>
+  <node id="m11">
+    <data key="d0">MOVIE</data>
+    <data key="d8">X战警</data>
+    <data key="d7">2000</data>
+  </node>
+  <node id="m12">
+    <data key="d0">MOVIE</data>
+    <data key="d8">刀锋战士</data>
+    <data key="d7">1998</data>
+  </node>
+  <node id="m13">
+    <data key="d0">MOVIE</data>
+    <data key="d8">夜魔侠</data>
+    <data key="d7">2003</data>
+  </node>
+  <node id="m14">
+    <data key="d0">MOVIE</data>
+    <data key="d8">神奇四侠</data>
+    <data key="d7">2005</data>
+  </node>
+  <node id="m15">
+    <data key="d0">MOVIE</data>
+    <data key="d8">钢铁侠2</data>
+    <data key="d7">2010</data>
+  </node>
+  <node id="m16">
+    <data key="d0">MOVIE</data>
+    <data key="d8">雷神</data>
+    <data key="d7">2011</data>
+  </node>
+  <node id="m17">
+    <data key="d0">MOVIE</data>
+    <data key="d8">美国队长：复仇者先锋</data>
+    <data key="d7">2011</data>
+  </node>
+  <node id="m18">
+    <data key="d0">MOVIE</data>
+    <data key="d8">无敌浩克</data>
+    <data key="d7">2008</data>
+  </node>
+  <node id="m19">
+    <data key="d0">MOVIE</data>
+    <data key="d8">钢铁侠3</data>
+    <data key="d7">2013</data>
+  </node>
+  <node id="m20">
+    <data key="d0">MOVIE</data>
+    <data key="d8">美国队长2：冬日战士</data>
+    <data key="d7">2014</data>
+  </node>
+  <node id="m21">
+    <data key="d0">MOVIE</data>
+    <data key="d8">蚁人</data>
+    <data key="d7">2015</data>
+  </node>
+  <node id="m23">
+    <data key="d0">MOVIE</data>
+    <data key="d8">银河护卫队2</data>
+    <data key="d7">2017</data>
+  </node>
+  <node id="m24">
+    <data key="d0">MOVIE</data>
+    <data key="d8">雷神3：诸神黄昏</data>
+    <data key="d7">2017</data>
+  </node>
+  <node id="m25">
+    <data key="d0">MOVIE</data>
+    <data key="d8">蚁人2：黄蜂女现身</data>
+    <data key="d7">2018</data>
+  </node>
+  <node id="m26">
+    <data key="d0">MOVIE</data>
+    <data key="d8">惊奇队长</data>
+    <data key="d7">2019</data>
+  </node>
+  <node id="m27">
+    <data key="d0">MOVIE</data>
+    <data key="d8">尚气与十环传奇</data>
+    <data key="d7">2021</data>
+  </node>
+  <node id="m28">
+    <data key="d0">MOVIE</data>
+    <data key="d8">永恒族</data>
+    <data key="d7">2021</data>
+  </node>
+  <node id="m29">
+    <data key="d0">MOVIE</data>
+    <data key="d8">蜘蛛侠：英雄远征</data>
+    <data key="d7">2019</data>
+  </node>
+  <node id="e10">
+    <data key="d0">EVENT</data>
+    <data key="d9">秘密入侵</data>
+    <data key="d7">2008</data>
+  </node>
+  <node id="e11">
+    <data key="d0">EVENT</data>
+    <data key="d9">内战2</data>
+    <data key="d7">2016</data>
+  </node>
+  <node id="e12">
+    <data key="d0">EVENT</data>
+    <data key="d9">天启时代</data>
+    <data key="d7">1995</data>
+  </node>
+  <node id="e13">
+    <data key="d0">EVENT</data>
+    <data key="d9">M王国</data>
+    <data key="d7">2005</data>
+  </node>
+  <node id="e14">
+    <data key="d0">EVENT</data>
+    <data key="d9">黑凤凰传说</data>
+    <data key="d7">1980</data>
+  </node>
+  <node id="e15">
+    <data key="d0">EVENT</data>
+    <data key="d9">克拉科亚时代</data>
+    <data key="d7">2019</data>
+  </node>
+  <node id="e16">
+    <data key="d0">EVENT</data>
+    <data key="d9">原罪</data>
+    <data key="d7">2014</data>
+  </node>
+  <node id="e17">
+    <data key="d0">EVENT</data>
+    <data key="d9">无限手套</data>
+    <data key="d7">1991</data>
+  </node>
+  <node id="e18">
+    <data key="d0">EVENT</data>
+    <data key="d9">买克塔传说</data>
+    <data key="d7">1996</data>
+  </node>
+  <node id="e19">
+    <data key="d0">EVENT</data>
+    <data key="d9">未来昔日</data>
+    <data key="d7">1981</data>
+  </node>
+  <node id="e20">
+    <data key="d0">EVENT</data>
+    <data key="d9">秘密战争（2015）</data>
+    <data key="d7">2015</data>
+  </node>
+  <node id="i200">
+    <data key="d0">ITEM</data>
+    <data key="d10">蛛网发射器</data>
+    <data key="d6">装备</data>
+  </node>
+  <node id="i201">
+    <data key="d0">ITEM</data>
+    <data key="d10">反浩克装甲</data>
+    <data key="d6">动力装甲</data>
+  </node>
+  <node id="i202">
+    <data key="d0">ITEM</data>
+    <data key="d10">十环</data>
+    <data key="d6">神秘神器</data>
+  </node>
+  <node id="i203">
+    <data key="d0">ITEM</data>
+    <data key="d10">漂浮斗篷</data>
+    <data key="d6">神秘神器</data>
+  </node>
+  <node id="i204">
+    <data key="d0">ITEM</data>
+    <data key="d10">瓦坎达科技珠</data>
+    <data key="d6">科技产品</data>
+  </node>
+  <node id="i205">
+    <data key="d0">ITEM</data>
+    <data key="d10">皮姆粒子</data>
+    <data key="d6">科学发现</data>
+  </node>
+  <node id="i206">
+    <data key="d0">ITEM</data>
+    <data key="d10">振金</data>
+    <data key="d6">金属</data>
+  </node>
+  <node id="i207">
+    <data key="d0">ITEM</data>
+    <data key="d10">艾德曼合金</data>
+    <data key="d6">金属</data>
+  </node>
+  <node id="i208">
+    <data key="d0">ITEM</data>
+    <data key="d10">现实之海</data>
+    <data key="d6">无限宝石容器</data>
+  </node>
+  <node id="i209">
+    <data key="d0">ITEM</data>
+    <data key="d10">宇宙魔方</data>
+    <data key="d6">空间宝石容器</data>
+  </node>
+  <node id="i210">
+    <data key="d0">ITEM</data>
+    <data key="d10">洛基权杖</data>
+    <data key="d6">武器</data>
+  </node>
+  <node id="i211">
+    <data key="d0">ITEM</data>
+    <data key="d10">阿戈摩托之眼</data>
+    <data key="d6">神秘神器</data>
+  </node>
+  <node id="i212">
+    <data key="d0">ITEM</data>
+    <data key="d10">宇宙立方</data>
+    <data key="d6">无限神器</data>
+  </node>
+  <node id="i213">
+    <data key="d0">ITEM</data>
+    <data key="d10">无限公式</data>
+    <data key="d6">化学品</data>
+  </node>
+  <node id="i214">
+    <data key="d0">ITEM</data>
+    <data key="d10">心形草</data>
+    <data key="d6">植物</data>
+  </node>
+  <edge source="c1" target="t1" id="e_c1_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c1" target="t3" id="e_c1_t3">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c2" target="t1" id="e_c2_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c3" target="t1" id="e_c3_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c4" target="t1" id="e_c4_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c5" target="t1" id="e_c5_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c5" target="t2" id="e_c5_t2">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c6" target="t1" id="e_c6_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c6" target="t2" id="e_c6_t2">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c7" target="t2" id="e_c7_t2">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c2" target="i1" id="e_c2_i1">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c3" target="i2" id="e_c3_i2">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c1" target="i3" id="e_c1_i3">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c1" target="i4" id="e_c1_i4">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c5" target="i5" id="e_c5_i5">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c6" target="i6" id="e_c6_i6">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c6" target="i7" id="e_c6_i7">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c1" target="c2" id="e_c1_c2">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c3" target="c4" id="e_c3_c4">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c100" target="t1" id="e_c100_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c101" target="t1" id="e_c101_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c102" target="t1" id="e_c102_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c103" target="t1" id="e_c103_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c105" target="t1" id="e_c105_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c106" target="t1" id="e_c106_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c107" target="t1" id="e_c107_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c300" target="c1" id="e_c300_c1">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c300" target="c2" id="e_c300_c2">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c300" target="t1" id="e_c300_t1">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c301" target="c3" id="e_c301_c3">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c301" target="c2" id="e_c301_c2">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c303" target="c100" id="e_c303_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c304" target="c2" id="e_c304_c2">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c305" target="t1" id="e_c305_t1">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c306" target="c100" id="e_c306_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c205" target="c200" id="e_c205_c200">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c202" target="c301" id="e_c202_c301">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c5" target="c100" id="e_c5_c100">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c6" target="c100" id="e_c6_c100">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c3" target="c301" id="e_c3_c301">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c102" target="l10" id="e_c102_l10">
+    <data key="d13">来自</data>
+  </edge>
+  <edge source="c302" target="l11" id="e_c302_l11">
+    <data key="d13">来自</data>
+  </edge>
+  <edge source="c200" target="l15" id="e_c200_l15">
+    <data key="d13">来自</data>
+  </edge>
+  <edge source="c101" target="l16" id="e_c101_l16">
+    <data key="d13">来自</data>
+  </edge>
+  <edge source="c1" target="i100" id="e_c1_i100">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c305" target="i101" id="e_c305_i101">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c300" target="i106" id="e_c300_i106">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c204" target="i102" id="e_c204_i102">
+    <data key="d13">使用</data>
+  </edge>
+  <edge source="c400" target="t7" id="e_c400_t7">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c401" target="t7" id="e_c401_t7">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c402" target="t7" id="e_c402_t7">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c403" target="t7" id="e_c403_t7">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c404" target="t7" id="e_c404_t7">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c405" target="t7" id="e_c405_t7">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c406" target="t7" id="e_c406_t7">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c400" target="c401" id="e_c400_c401">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c403" target="c404" id="e_c403_c404">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c406" target="c300" id="e_c406_c300">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c402" target="c300" id="e_c402_c300">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c500" target="t8" id="e_c500_t8">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c501" target="t8" id="e_c501_t8">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c502" target="t8" id="e_c502_t8">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c503" target="t8" id="e_c503_t8">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c501" target="c502" id="e_c501_c502">
+    <data key="d13">亲属</data>
+  </edge>
+  <edge source="c500" target="c501" id="e_c500_c501">
+    <data key="d13">亲属</data>
+  </edge>
+  <edge source="c100" target="l2" id="e_c100_l2">
+    <data key="d13">来自</data>
+  </edge>
+  <edge source="c600" target="c100" id="e_c600_c100">
+    <data key="d13">亲属</data>
+  </edge>
+  <edge source="c601" target="c100" id="e_c601_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c602" target="c100" id="e_c602_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c603" target="c100" id="e_c603_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c604" target="c100" id="e_c604_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c605" target="c100" id="e_c605_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c606" target="c100" id="e_c606_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c607" target="c100" id="e_c607_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c608" target="c609" id="e_c608_c609">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c609" target="t9" id="e_c609_t9">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c610" target="c609" id="e_c610_c609">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c708" target="c200" id="e_c708_c200">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c708" target="c202" id="e_c708_c202">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c709" target="c200" id="e_c709_c200">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c205" target="c700" id="e_c205_c700">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c202" target="c700" id="e_c202_c700">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c203" target="c700" id="e_c203_c700">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c800" target="t1" id="e_c800_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c800" target="c2" id="e_c800_c2">
+    <data key="d13">亲属</data>
+  </edge>
+  <edge source="c803" target="t1" id="e_c803_t1">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c804" target="t1" id="e_c804_t1">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c805" target="t1" id="e_c805_t1">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c806" target="t1" id="e_c806_t1">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c802" target="t1" id="e_c802_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c901" target="c902" id="e_c901_c902">
+    <data key="d13">使者</data>
+  </edge>
+  <edge source="c900" target="c300" id="e_c900_c300">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c910" target="t10" id="e_c910_t10">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c911" target="t10" id="e_c911_t10">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c910" target="c100" id="e_c910_c100">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c912" target="t10" id="e_c912_t10">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c913" target="t10" id="e_c913_t10">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c914" target="t1" id="e_c914_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c915" target="t1" id="e_c915_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c914" target="l10" id="e_c914_l10">
+    <data key="d13">来自</data>
+  </edge>
+  <edge source="c915" target="l10" id="e_c915_l10">
+    <data key="d13">来自</data>
+  </edge>
+  <edge source="c914" target="c102" id="e_c914_c102">
+    <data key="d13">亲属</data>
+  </edge>
+  <edge source="c930" target="t11" id="e_c930_t11">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c931" target="t11" id="e_c931_t11">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c932" target="t11" id="e_c932_t11">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c933" target="t11" id="e_c933_t11">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c930" target="c6" id="e_c930_c6">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c921" target="c100" id="e_c921_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c922" target="c100" id="e_c922_c100">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c923" target="c2" id="e_c923_c2">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c923" target="t1" id="e_c923_t1">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c980" target="c3" id="e_c980_c3">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c982" target="t1" id="e_c982_t1">
+    <data key="d13">敌人</data>
+  </edge>
+  <edge source="c950" target="t3" id="e_c950_t3">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c951" target="t3" id="e_c951_t3">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c951" target="c1" id="e_c951_c1">
+    <data key="d13">盟友</data>
+  </edge>
+  <edge source="c954" target="c955" id="e_c954_c955">
+    <data key="d13">亲属</data>
+  </edge>
+  <edge source="c955" target="t1" id="e_c955_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c954" target="t1" id="e_c954_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c970" target="t1" id="e_c970_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c971" target="t1" id="e_c971_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c972" target="t1" id="e_c972_t1">
+    <data key="d13">成员</data>
+  </edge>
+  <edge source="c973" target="t1" id="e_c973_t1">
+    <data key="d13">成员</data>
+  </edge>
+</graphml>
