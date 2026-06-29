@@ -37,7 +37,6 @@ marvel-universe-data/
 │   ├── collector/                 # 数据收集器
 │   │   ├── collector_helper.py    # 核心工具库
 │   │   ├── data_definitions.py    # 新数据定义（按批次）
-│   │   ├── run_batch.py           # 批次生成 CLI（旧）
 │   │   └── run.py                 # ★ 统一入口：生成 + 双库同步
 │   └── import/                    # Neo4j 导入工具
 │       ├── import_all.py          # 全量导入（新库初始化）
@@ -83,28 +82,6 @@ python3 scripts/collector/run.py --force
 ```
 
 `run.py` 是推荐入口，一次性完成 生成 → 云导入 → 本地导入。每个目标不通就标记 `failed`，下次重试自动发现。
-
-**旧入口（run_batch.py，只操作 `.env` 指向的单一目标）：**
-
-```bash
-# 查看收集进度
-python3 scripts/collector/run_batch.py --status
-
-# 列出所有定义的批次
-python3 scripts/collector/run_batch.py --list-batches
-
-# 生成下一批数据
-python3 scripts/collector/run_batch.py
-
-# 生成并导入 Neo4j（单一目标）
-python3 scripts/collector/run_batch.py --import
-
-# 仅导入已有批次（不生成新数据）
-python3 scripts/collector/run_batch.py --import-only
-
-# 仅更新 REPORT.md 总表
-python3 scripts/collector/run_batch.py --report
-```
 
 每次数据收集或导入后，`REPORT.md` 会自动更新。你也可以随时用 `--report` 手动刷新。
 
@@ -179,17 +156,7 @@ python3 scripts/import/sync_to_local.py --status
 python3 scripts/import/sync_to_local.py
 ```
 
-### 方式三：通过 run_batch.py（仅操作单一目标）
-
-```bash
-# 一次性导入所有未导入的批次
-python3 scripts/collector/run_batch.py --import-only
-
-# 生成并导入下一批
-python3 scripts/collector/run_batch.py --import
-```
-
-### 方式四：手动导入
+### 方式三：手动导入
 
 ```bash
 cypher-shell -a bolt://127.0.0.1:7687 -u neo4j -p neo4jneo4j -d universe -f fixed/relationships_movie_appearances.cypher
@@ -258,7 +225,7 @@ cypher-shell -a bolt://127.0.0.1:7687 -u neo4j -p neo4jneo4j -d universe -f fixe
 
 ### 新增数据与已有数据重名
 
-`run_batch.py` 会自动扫描 `fixed/` + `scheduled_data/` 中所有已有的 `name_en`，跳过重复实体。如果手动添加了重名角色，只需再次运行，系统会自动跳过。
+`run.py` 会自动扫描 `fixed/` + `scheduled_data/` 中所有已有的 `name_en`，跳过重复实体。如果手动添加了重名角色，只需再次运行，系统会自动跳过。
 
 ---
 

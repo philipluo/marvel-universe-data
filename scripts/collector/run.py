@@ -12,6 +12,8 @@ run.py — 统一数据收集与入库入口。
     python3 scripts/collector/run.py              # 下一批 + 云优先 + fallback
     python3 scripts/collector/run.py --batch 3    # 指定批次
     python3 scripts/collector/run.py --retry      # 不生成新批次，只重试未入库内容
+    python3 scripts/collector/run.py --generate-only  # 只生成文件，不导数据库
+    python3 scripts/collector/run.py --list-batches   # 列出所有批次定义
     python3 scripts/collector/run.py --status     # 查看同步状态
     python3 scripts/collector/run.py --report     # 只更新 REPORT.md
 """
@@ -31,10 +33,12 @@ INDEX = SCHEDULED_DIR / "index.json"
 ENV_CLOUD = ROOT / ".env"
 ENV_LOCAL = ROOT / ".env.local"
 
-# 确保可 import run_batch（运行目录为项目根）
+# 确保可 import 同级模块
 sys.path.insert(0, str(ROOT / "scripts" / "collector"))
-import run_batch  # noqa: E402
-from collector_helper import get_batch_state, save_batch_state  # noqa: E402
+from collector_helper import (  # noqa: E402
+    get_batch_state, save_batch_state, generate_batch, print_status,
+)
+from data_definitions import BATCHES  # noqa: E402
 
 
 # ---------- 工具函数 ----------
@@ -251,10 +255,10 @@ def cmd_status():
                 print(f"  📦 待同步批次: {', '.join(pending['batches'])}")
 
 
-def cmd_run(batch_num: int = None, force: bool = False):
+def cmd_run(batch_num: int = None, force: bool = False, sync: bool = True):
     """
     生成批（如需要）→ 同步 cloud → 同步 local。
-    batch_num=None 则自动下一批。
+    batch_num=None 则自动下一批。sync=False 只生成不同步。
     """
     state = read_index()
 
@@ -268,13 +272,13 @@ def cmd_run(batch_num: int = None, force: bool = False):
             b = len(completed) + 1
 
         if str(b) not in completed:
-            if b > len(run_batch.BATCHES):
-                print(f"🎉 所有 {len(run_batch.BATCHES)} 批都已完成，无需生成")
+            if b > len(BATCHES):
+                print(f"🎉 所有 {len(BATCHES)} 批都已完成，无需生成")
             else:
                 print(f"\n{'='*60}")
-                print(f"  生成批次 {b}: {run_batch.BATCHES[b-1]['name']}")
+                print(f"  生成批次 {b}: {BATCHES[b-1]['name']}")
                 print(f"{'='*60}")
-                run_batch.generate_batch(b)
+                generate_batch(b)
                 # 重新读取 state（generate_batch 内部 save_batch_state 了）
                 state = read_index()
                 # 为新批次初始化 import_log 状态
@@ -288,29 +292,32 @@ def cmd_run(batch_num: int = None, force: bool = False):
     # ---- 2. 重新读状态（可能刚写入过） ----
     state = read_index()
 
-    # ---- 3. 同步云端 ----
-    print(f"\n{'='*60}")
-    print("  同步云端（主数据库）")
-    print(f"{'='*60}")
-    if ENV_CLOUD.exists():
-        do_sync(state, "cloud", load_env(ENV_CLOUD), "云端", force=force)
-    else:
-        print("  ⏭️  云端: .env 不存在")
+    # ---- 3. 同步云端（sync=False 时跳过） ----
+    if sync:
+        print(f"\n{'='*60}")
+        print("  同步云端（主数据库）")
+        print(f"{'='*60}")
+        if ENV_CLOUD.exists():
+            do_sync(state, "cloud", load_env(ENV_CLOUD), "云端", force=force)
+        else:
+            print("  ⏭️  云端: .env 不存在")
 
-    # ---- 4. 同步本地 ----
-    print(f"\n{'='*60}")
-    print("  同步本地 Desktop")
-    print(f"{'='*60}")
-    if ENV_LOCAL.exists():
-        do_sync(state, "local", load_env(ENV_LOCAL), "本地", force=force)
-    else:
-        print("  ⏭️  本地: .env.local 不存在")
+        # ---- 4. 同步本地 ----
+        print(f"\n{'='*60}")
+        print("  同步本地 Desktop")
+        print(f"{'='*60}")
+        if ENV_LOCAL.exists():
+            do_sync(state, "local", load_env(ENV_LOCAL), "本地", force=force)
+        else:
+            print("  ⏭️  本地: .env.local 不存在")
 
-    # ---- 5. 持久化 ----
-    write_index(state)
-    print(f"\n{'='*60}")
-    print("  ✅ 完成")
-    print(f"{'='*60}")
+        # ---- 5. 持久化 ----
+        write_index(state)
+        print(f"\n{'='*60}")
+        print("  ✅ 完成")
+        print(f"{'='*60}")
+    else:
+        print("\n⏭️  --generate-only 模式：跳过数据库同步")
 
     # ---- 6. 更新 REPORT.md ----
     print("\n📝 更新报告...")
@@ -333,6 +340,18 @@ def cmd_report():
         print(f"⚠️  报告生成失败: {e}")
 
 
+def cmd_list_batches():
+    """列出所有定义的批次"""
+    print(f"\n共 {len(BATCHES)} 个批次:\n")
+    for i, batch in enumerate(BATCHES, 1):
+        chars = len(batch.get("characters", []))
+        rels = len(batch.get("relationships", []))
+        teams = len(batch.get("teams", []))
+        print(f"  批次 {i}: {batch['name']}")
+        print(f"        {chars} 角色, {teams} 团队, {rels} 关系")
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="漫威数据收集入口 — 生成 + 云端优先 + 本地同步"
@@ -340,8 +359,11 @@ def main():
     parser.add_argument("--batch", type=int, help="指定批次号")
     parser.add_argument("--retry", action="store_true",
                         help="不生成新批，只重试未入库内容")
+    parser.add_argument("--generate-only", action="store_true",
+                        help="只生成文件，不连接数据库")
     parser.add_argument("--force", action="store_true",
                         help="强制全部重新同步（幂等）")
+    parser.add_argument("--list-batches", action="store_true", help="列出所有批次定义")
     parser.add_argument("--status", action="store_true", help="查看同步状态")
     parser.add_argument("--report", action="store_true", help="仅更新 REPORT.md")
 
@@ -353,6 +375,14 @@ def main():
         return
     if args.report:
         cmd_report()
+        return
+    if args.list_batches:
+        cmd_list_batches()
+        return
+
+    # 仅生成文件，不连数据库
+    if args.generate_only:
+        cmd_run(batch_num=args.batch, sync=False)
         return
 
     # 重试模式：不生成新批，只同步 pending
