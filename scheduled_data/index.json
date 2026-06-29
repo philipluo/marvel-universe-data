@@ -1,0 +1,46 @@
+{
+  "latest_batch": 2,
+  "completed_batches": [
+    "1",
+    "2"
+  ],
+  "total_entities_added": 33,
+  "next_ids": {
+    "c": 1007,
+    "t": 18,
+    "l": 37,
+    "m": 32,
+    "e": 23,
+    "i": 217
+  },
+  "import_log": {
+    "cloud": {
+      "last_ok": "2026-06-28T18:00:00",
+      "batches": {
+        "1": "ok",
+        "2": "ok"
+      },
+      "fixed": {
+        "relationships_movie_appearances.cypher": "ok",
+        "data_corrections.cypher": "ok"
+      }
+    },
+    "local": {
+      "last_ok": "2026-06-28T23:37:38",
+      "batches": {
+        "1": "ok",
+        "2": "ok"
+      },
+      "fixed": {
+        "relationships_movie_appearances.cypher": {
+          "status": "ok",
+          "mtime": "2026-06-28T22:34:49"
+        },
+        "data_corrections.cypher": {
+          "status": "ok",
+          "mtime": "2026-06-20T14:22:06"
+        }
+      }
+    }
+  }
+}

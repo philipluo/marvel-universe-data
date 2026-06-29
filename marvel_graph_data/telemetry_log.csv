@@ -1,6 +1,0 @@
-timestamp,operation,prompt_tokens,completion_tokens,estimated_context_length,cypher_file_lines
-2026-05-19T10:06:28.694099,Batch_1_Core_Avengers_WebSearch,682,159,5000,39
-2026-05-20T01:02:43.735942,Batch_2_to_8_All,5,93,93,132,success
-2026-05-20T05:36:44.941704+00:00,EXPANSION_BATCH,5,232,232,364,success
-2026-05-22T12:02:35.675891,Batch_2_to_8_All,5,81,81,441,success
-2026-05-22T20:01:44.012611,Batch_2_to_8_All,5,68,68,509,success

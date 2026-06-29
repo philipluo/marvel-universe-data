@@ -1,0 +1,18 @@
+# Neo4j 连接凭证（包含密码，禁止提交）
+.env
+.env.local
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# macOS
+.DS_Store
+
+# 临时文件
+*.tmp
+*.swp
+*~
