@@ -13,7 +13,7 @@
 - **电影**: 29
 - **事件**: 19
 - **物品**: 31
-- **关系**: 287 条（成员/敌人/盟友/亲属/来自/使用/使者）
+- **关系**: 449 条（成员/敌人/盟友/亲属/出演/来自/使用/使者）
 
 ---
 
@@ -37,19 +37,24 @@ marvel-universe-data/
 │   ├── collector/                 # 数据收集器
 │   │   ├── collector_helper.py    # 核心工具库
 │   │   ├── data_definitions.py    # 新数据定义（按批次）
-│   │   └── run_batch.py           # CLI 入口
+│   │   ├── run_batch.py           # 批次生成 CLI（旧）
+│   │   └── run.py                 # ★ 统一入口：生成 + 双库同步
 │   └── import/                    # Neo4j 导入工具
 │       ├── import_all.py          # 全量导入（新库初始化）
-│       └── import_and_verify.py   # 增量导入 + 验证
+│       ├── import_and_verify.py   # 增量导入 + 验证
+│       ├── import_movie_appearances.py  # 出演关系导入
+│       ├── sync_to_local.py       # ★ 单向同步到本地 Desktop
+│       ├── import_neo4j.py        # CSV 导入工具
+│       └── neo4j_query_llm.py     # 只读 Cypher 执行器
 ├── docs/
-│   └── plan/
-│       └── v1.0_scripts_refactor_collector.md
+│   ├── plan/
+│   │   └── v1.0_scripts_refactor_collector.md
+│   └── release/
+│       └── v1.0.0.md
 ├── REPORT.md                       # [自动生成] 人类可读的数据总表
-└── .env                           # Neo4j 连接配置
-    # NEO4J_URI=bolt://127.0.0.1:7687
-    # NEO4J_USER=neo4j
-    # NEO4J_PASSWORD=neo4jneo4j
-    # NEO4J_DATABASE=universe
+├── .env                            # 【不提交】云端 Aura 连接配置
+├── .env.local                      # 【不提交】本地 Desktop 连接配置
+└── .env.example                    # 连接配置模板（无密码）
 ```
 
 ---
@@ -58,27 +63,47 @@ marvel-universe-data/
 
 ### 命令参考
 
+**新入口（推荐）：**
+
+```bash
+# 查看双库同步状态
+python3 scripts/collector/run.py --status
+
+# 生成下一批 + 同步云端 + 同步本地
+python3 scripts/collector/run.py
+
+# 不生成新批次，只重试未同步内容（可用于 cron）
+python3 scripts/collector/run.py --retry
+
+# 指定批次生成 + 同步
+python3 scripts/collector/run.py --batch 3
+
+# 强制全量重跑（幂等安全）
+python3 scripts/collector/run.py --force
+```
+
+`run.py` 是推荐入口，一次性完成 生成 → 云导入 → 本地导入。每个目标不通就标记 `failed`，下次重试自动发现。
+
+**旧入口（run_batch.py，只操作 `.env` 指向的单一目标）：**
+
 ```bash
 # 查看收集进度
-python scripts/collector/run_batch.py --status
+python3 scripts/collector/run_batch.py --status
 
 # 列出所有定义的批次
-python scripts/collector/run_batch.py --list-batches
+python3 scripts/collector/run_batch.py --list-batches
 
-# 生成下一批数据（自动检测进度）
-python scripts/collector/run_batch.py
+# 生成下一批数据
+python3 scripts/collector/run_batch.py
 
-# 生成指定批次
-python scripts/collector/run_batch.py --batch 2
+# 生成并导入 Neo4j（单一目标）
+python3 scripts/collector/run_batch.py --import
 
-# 生成并导入 Neo4j
-python scripts/collector/run_batch.py --import
+# 仅导入已有批次（不生成新数据）
+python3 scripts/collector/run_batch.py --import-only
 
-# 仅导入已有批次到 Neo4j（不生成新数据）
-python scripts/collector/run_batch.py --import-only
-
-# 仅更新 REPORT.md 总表（从 Neo4j 查询最新数据）
-python scripts/collector/run_batch.py --report
+# 仅更新 REPORT.md 总表
+python3 scripts/collector/run_batch.py --report
 ```
 
 每次数据收集或导入后，`REPORT.md` 会自动更新。你也可以随时用 `--report` 手动刷新。
@@ -109,62 +134,65 @@ MERGE (c984)-[:成员]->(t1);
 
 ---
 
-## 定时任务设置（Hermes / Cron）
+## 定时任务设置（Cron）
 
-### 方案一：纯数据收集（推荐）
-
-设置 cron 每 4 或 8 小时运行一次：
+推荐使用 `run.py --retry`，只重试未同步内容（不会意外触发批量生成）：
 
 ```cron
-# 每 8 小时生成一批新数据
-0 */8 * * * cd /path/to/marvel-universe-data && python scripts/collector/run_batch.py 2>> logs/collector.log
+# 每 4 小时重试未入库的内容（幂等安全）
+0 */4 * * * cd /path/to/marvel-universe-data && python3 scripts/collector/run.py --retry >> scheduled_data/sync.log 2>&1
 ```
 
-或者用 Hermes 配置定时抓取：
-```json
-{
-  "cron": "0 */8 * * *",
-  "command": "python scripts/collector/run_batch.py",
-  "cwd": "/path/to/marvel-universe-data",
-  "log": "logs/collector.log"
-}
-```
-
-### 方案二：收集 + 自动入库
+如果需要定时生成新批次（`data_definitions.py` 中定义了下游批次时）：
 
 ```cron
-# 每 8 小时生成一批并自动导入 Neo4j
-0 */8 * * * cd /path/to/marvel-universe-data && python scripts/collector/run_batch.py --import 2>> logs/collector.log
+# 每日凌晨生成下一批并同步双库
+0 3 * * * cd /path/to/marvel-universe-data && python3 scripts/collector/run.py >> scheduled_data/sync.log 2>&1
 ```
 
-### 首次运行后自动停止
-
-`run_batch.py` 在 `data_definitions.py` 定义的所有批次完成后，会自动输出"所有批次已完成"并退出，不会做无效工作。如果需要继续添加新数据，只需向 `data_definitions.py` 追加新批次即可。
+所有批次完成后自动输出"全部完成"并跳过，不会做无效工作。
 
 ---
 
 ## 导入新数据到 Neo4j
 
-### 方式一：通过 run_batch.py（推荐）
+### 方式一：通过 run.py（推荐，双库同步）
+
+```bash
+# 生成下一批 + 同步云端 + 同步本地
+python3 scripts/collector/run.py
+
+# 仅同步已有未入库内容
+python3 scripts/collector/run.py --retry
+
+# 强制全量重跑（幂等安全）
+python3 scripts/collector/run.py --force
+```
+
+### 方式二：通过 sync_to_local.py（仅同步本地）
+
+```bash
+# 查看本地待同步内容
+python3 scripts/import/sync_to_local.py --status
+
+# 同步未同步内容到本地
+python3 scripts/import/sync_to_local.py
+```
+
+### 方式三：通过 run_batch.py（仅操作单一目标）
 
 ```bash
 # 一次性导入所有未导入的批次
-python scripts/collector/run_batch.py --import-only
+python3 scripts/collector/run_batch.py --import-only
 
 # 生成并导入下一批
-python scripts/collector/run_batch.py --import
+python3 scripts/collector/run_batch.py --import
 ```
 
-### 方式二：使用 import/import_and_verify.py（批量验证）
+### 方式四：手动导入
 
 ```bash
-python scripts/import/import_and_verify.py
-```
-
-### 方式三：手动导入
-
-```bash
-cypher-shell -a bolt://127.0.0.1:7687 -u neo4j -p neo4jneo4j -d universe -f scheduled_data/batch_001/characters.cypher
+cypher-shell -a bolt://127.0.0.1:7687 -u neo4j -p neo4jneo4j -d universe -f fixed/relationships_movie_appearances.cypher
 ```
 
 ### 注意事项
@@ -203,15 +231,16 @@ cypher-shell -a bolt://127.0.0.1:7687 -u neo4j -p neo4jneo4j -d universe -f sche
 
 ### 关系类型说明
 
-| 关系标签 | 代码常量 | 是否常用双向 |
-|---------|---------|------------|
-| 成员 | `成员` | 否（单向） |
-| 敌人 | `敌人` | 是（自动生成反向） |
-| 盟友 | `盟友` | 是（自动生成反向） |
-| 亲属 | `亲属` | 否 |
-| 来自 | `来自` | 否 |
-| 使用 | `使用` | 否 |
-| 使者 | `使者` | 否 |
+| 关系标签 | 代码常量 | 数量 | 是否常用双向 |
+|---------|---------|:---:|:-----------:|
+| 出演 | `APPEARS_IN` / `出演` | 162 | 否（单向） |
+| 成员 | `MEMBER_OF` / `成员` | 72 | 否（单向） |
+| 敌人 | `ENEMY_OF` / `敌人` | 114 | 是（自动生成反向） |
+| 盟友 | `ALLY_OF` / `盟友` | 76 | 是（自动生成反向） |
+| 亲属 | `RELATIVE_OF` / `亲属` | 10 | 否 |
+| 来自 | `FROM` / `来自` | 7 | 否 |
+| 使用 | `USES` / `使用` | 7 | 否 |
+| 使者 | `HERALD_OF` / `使者` | 1 | 否 |
 
 ---
 
@@ -236,6 +265,18 @@ cypher-shell -a bolt://127.0.0.1:7687 -u neo4j -p neo4jneo4j -d universe -f sche
 ## Neo4j 查询示例
 
 ```cypher
+// 查看蜘蛛侠出演过的电影
+MATCH (c:Character {name_en: "Spider-Man"})-[:出演]->(m:Movie)
+RETURN m.title, m.year ORDER BY m.year
+
+// 一部电影有哪些角色出演
+MATCH (c:Character)-[:出演]->(m:Movie {title: "复仇者联盟：终局之战"})
+RETURN c.name_en, c.name ORDER BY c.name_en
+
+// 找出关联最多电影的角色
+MATCH (c:Character)-[:出演]->(m:Movie)
+RETURN c.name_en, count(m) AS movies ORDER BY movies DESC LIMIT 10
+
 // 查看钢铁侠的盟友
 MATCH (c:Character {name_en: "Iron Man"})-[:盟友]->(ally)
 RETURN ally.name_en, ally.name
