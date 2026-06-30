@@ -38,8 +38,16 @@ def _cache_path(key: str) -> Path:
     return CACHE_DIR / f"wiki_{safe}.json"
 
 
-def _cached_request(url: str, params: dict, cache_key: str | None = None) -> dict:
-    """带缓存的 MediaWiki API 请求"""
+def _cached_request(url: str, params: dict, cache_key: str | None = None,
+                    context: str = "") -> dict:
+    """带缓存的 MediaWiki API 请求
+
+    Args:
+        url: API 端点
+        params: 请求参数
+        cache_key: 缓存键（默认自动生成）
+        context: 错误消息中显示的上下文描述，便于调试
+    """
     effective_key = cache_key or url + json.dumps(params, sort_keys=True)
     cache_file = _cache_path(effective_key)
 
@@ -47,6 +55,8 @@ def _cached_request(url: str, params: dict, cache_key: str | None = None) -> dic
         age = time.time() - cache_file.stat().st_mtime
         if age < CACHE_LIFETIME:
             return json.loads(cache_file.read_text(encoding="utf-8"))
+
+    ctx_msg = f" for {context}" if context else ""
 
     for attempt in range(RETRY_TIMES + 1):
         try:
@@ -58,18 +68,25 @@ def _cached_request(url: str, params: dict, cache_key: str | None = None) -> dic
             return data
         except requests.RequestException as e:
             if attempt < RETRY_TIMES:
-                time.sleep(2 ** attempt)
+                # 429 (rate limit) 使用更长的退避
+                if isinstance(e, requests.HTTPError) and e.response is not None and e.response.status_code == 429:
+                    wait = 2 ** (attempt + 2)  # 4s, 8s, 16s
+                else:
+                    wait = 2 ** attempt
+                print(f"  [retry {attempt + 1}/{RETRY_TIMES}{ctx_msg}] wait {wait}s — {e}")
+                time.sleep(wait)
                 continue
-            raise
+            raise RuntimeError(f"Request failed{ctx_msg}: {e}") from e
 
 
-def api_query(params: dict, api_base: str = WIKI_API_BASE, cache_key: str | None = None) -> dict:
+def api_query(params: dict, api_base: str = WIKI_API_BASE,
+              cache_key: str | None = None, context: str = "") -> dict:
     """通用 Wikipedia API 查询"""
     params.setdefault("format", "json")
     params.setdefault("action", "query")
     if "formatversion" not in params:
         params["formatversion"] = 2
-    return _cached_request(api_base, params, cache_key=cache_key)
+    return _cached_request(api_base, params, cache_key=cache_key, context=context)
 
 
 # ---------- 从列表/分类页发现角色 ----------
@@ -92,7 +109,8 @@ def get_characters_from_category(category: str) -> list[str]:
         if cmcontinue:
             params["cmcontinue"] = cmcontinue
 
-        data = api_query(params, cache_key=f"cat_{category}_{cmcontinue or '0'}")
+        data = api_query(params, cache_key=f"cat_{category}_{cmcontinue or '0'}",
+                          context=f"category '{category}'")
         pages = data.get("query", {}).get("categorymembers", [])
         for p in pages:
             title = p.get("title", "")
@@ -124,7 +142,8 @@ def get_characters_from_list(list_title: str) -> list[str]:
         if plcontinue:
             params["plcontinue"] = plcontinue
 
-        data = api_query(params, cache_key=f"links_{list_title}_{plcontinue or '0'}")
+        data = api_query(params, cache_key=f"links_{list_title}_{plcontinue or '0'}",
+                          context=f"list '{list_title}'")
         pages = data.get("query", {}).get("pages", [])
         for page in pages:
             links = page.get("links", [])
@@ -149,7 +168,8 @@ def search_characters(search_term: str, limit: int = 50) -> list[str]:
         "srlimit": limit,
         "srnamespace": 0,
     }
-    data = api_query(params, cache_key=f"search_{search_term}_{limit}")
+    data = api_query(params, cache_key=f"search_{search_term}_{limit}",
+                      context=f"search '{search_term}'")
     return [r.get("title", "") for r in data.get("query", {}).get("search", [])]
 
 
@@ -343,7 +363,8 @@ def _fetch_single_infobox(title: str, api_base: str, lang: str) -> dict:
     cache_key = f"wikitext_{lang}_{title}"
 
     try:
-        data = api_query(params, api_base=api_base, cache_key=cache_key)
+        data = api_query(params, api_base=api_base, cache_key=cache_key,
+                          context=f"infobox '{title}'")
         pages = data.get("query", {}).get("pages", [])
         if not pages:
             return {}
@@ -379,7 +400,7 @@ def discover_characters(theme_config: dict, count: int = 10) -> list[dict]:
             if candidates:
                 print(f"  📋 从分类 {wiki_category} 发现 {len(candidates)} 个页面")
         except Exception as e:
-            print(f"  ⚠️ 分类获取失败: {e}")
+            print(f"  ⚠️ 分类 '{wiki_category}' 获取失败: {e}")
 
     if not candidates and wiki_list:
         try:
@@ -387,12 +408,12 @@ def discover_characters(theme_config: dict, count: int = 10) -> list[dict]:
             if candidates:
                 print(f"  📋 从列表 {wiki_list} 发现 {len(candidates)} 个链接")
         except Exception as e:
-            print(f"  ⚠️ 列表获取失败: {e}")
+            print(f"  ⚠️ 列表 '{wiki_list}' 获取失败: {e}")
 
     if not candidates:
         # 兜底：搜索
-        theme_name = theme_config.get("name", "")
-        search_term = f"Marvel Comics {theme_name} character"
+        # 优先使用主题配置中手动指定的 search_term，否则自动构造
+        search_term = theme_config.get("search_term") or f"Marvel Comics {theme_config.get('name', '')} character"
         try:
             candidates = search_characters(search_term, limit=count * 2)
             if candidates:

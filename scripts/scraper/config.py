@@ -15,31 +15,34 @@ CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------- 爬取策略 ----------
 REQUESTS_DELAY = 2.0       # 每次请求间隔（秒）
-TIMEOUT = 15               # 请求超时（秒）
+TIMEOUT = 30               # 请求超时（秒）— 一些 Wikipedia 分类页响应较慢
 USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/125.0.0.0 Safari/537.36"
 )
 CACHE_LIFETIME = 86400 * 7  # 缓存有效期（秒），默认 7 天
-RETRY_TIMES = 1             # 失败重试次数
+RETRY_TIMES = 3             # 失败重试次数（总尝试次数 = RETRY_TIMES + 1 = 4）
 
 # ---------- 主题定义 ----------
 # 每个主题包含搜索方式：
 #   - wiki_list: Wikipedia 列表页面标题（从该页提取角色名）
-#   - wiki_category: Wikipedia 分类名（替代 wiki_list）
+#   - wiki_category: Wikipedia 分类名（替代 wiki_list，优先级高于 wiki_list）
+#   - search_term: 搜索兜底关键词（当 wiki_category / wiki_list 都无效时使用）
 #   - fandom_tag: Fandom Wiki 的标签
+#
+# 注意：wiki_category 和 wiki_list 的值必须是 Wikipedia 上当前存在的页面。
+#       2026-06 已验证所有分类和列表页面是否存在。
 THEMES = {
     "street-heroes": {
         "name": "街头英雄",
-        "wiki_list": "List of street-level superheroes",
-        "wiki_category": "Marvel_Comics_street-level_superheroes",
+        "search_term": "Marvel Comics street-level heroes",
         "description": "夜魔侠、惩罚者、铁拳等",
     },
     "cosmic": {
         "name": "宇宙实体",
         "wiki_category": "Marvel_Comics_cosmic_entities",
-        "wiki_list": "List of Marvel Comics cosmic entities",
+        "wiki_list": "List of cosmic entities in Marvel Comics",
         "description": "Galactus、Celestials、Living Tribunal 等",
     },
     "mutants": {
@@ -51,13 +54,11 @@ THEMES = {
     "villains": {
         "name": "反派",
         "wiki_category": "Marvel_Comics_supervillains",
-        "wiki_list": "List of Marvel Comics supervillains",
         "description": "各反派角色",
     },
     "magic": {
         "name": "魔法使用者",
-        "wiki_category": "Marvel_Comics_magic_users",
-        "wiki_list": "List of Marvel Comics magic users",
+        "wiki_category": "Marvel_Comics_characters_who_use_magic",
         "description": "奇异博士相关",
     },
     "mcu-only": {
@@ -68,7 +69,7 @@ THEMES = {
     },
     "avengers-expand": {
         "name": "复仇者扩展",
-        "wiki_category": "Avengers_members",
+        "wiki_category": "Avengers_(comics)_characters",
         "wiki_list": "List of Avengers members",
         "description": "更多复仇者",
     },
@@ -80,13 +81,12 @@ THEMES = {
     },
     "fantastic-four": {
         "name": "神奇四侠",
-        "wiki_category": "Fantastic_Four_members",
+        "wiki_category": "Fantastic_Four_characters",
         "wiki_list": "List of Fantastic Four members",
         "description": "神奇四侠及相关角色",
     },
     "eternals": {
         "name": "永恒族",
-        "wiki_category": "Eternals",
         "wiki_list": "Eternals (comics)",
         "description": "永恒族角色",
     },

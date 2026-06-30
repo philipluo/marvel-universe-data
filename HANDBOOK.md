@@ -22,9 +22,13 @@
 ```
 marvel-universe-data/
 ├── fixed/                         # 已审核的正确数据（只读）
-├── scheduled_data/                # 定时抓取生成的新数据
+├── scheduled_data/                # 所有数据层
+│   ├── curated/                   # 手工编写、审核通过的批次 (JSON)
+│   │   ├── 001_spider-verse-and-more.json
+│   │   └── 002_cosmic-expansion.json
+│   ├── crawled/                   # 爬虫自动产出（未经审核）
 │   ├── index.json                 # 批次状态追踪
-│   ├── batch_001/                 # 每批独立目录
+│   ├── batch_001/                 # 每批独立目录（Cypher 输出）
 │   │   ├── characters.cypher
 │   │   ├── teams.cypher
 │   │   ├── locations.cypher
@@ -36,8 +40,15 @@ marvel-universe-data/
 ├── scripts/
 │   ├── collector/                 # 数据收集器
 │   │   ├── collector_helper.py    # 核心工具库
-│   │   ├── data_definitions.py    # 新数据定义（按批次）
+│   │   ├── data_definitions.py    # 纯加载器（从 curated/ 加载 JSON）
 │   │   └── run.py                 # ★ 统一入口：生成 + 双库同步
+│   ├── scraper/                   # 自动爬虫模块
+│   │   ├── discover.py            # CLI 入口：根据主题发现角色
+│   │   ├── fetch_wiki.py          # Wikipedia 页面抓取 + infobox 解析
+│   │   ├── fetch_fandom.py        # Marvel Fandom 降级源
+│   │   ├── relationship.py        # 自动推断关系
+│   │   ├── output.py              # 输出为 batch JSON
+│   │   └── config.py              # 搜索源列表、爬取延迟等配置
 │   └── import/                    # Neo4j 导入工具
 │       ├── import_all.py          # 全量导入（新库初始化）
 │       ├── import_and_verify.py   # 增量导入 + 验证
@@ -47,9 +58,12 @@ marvel-universe-data/
 │       └── neo4j_query_llm.py     # 只读 Cypher 执行器
 ├── docs/
 │   ├── plan/
-│   │   └── v1.0_scripts_refactor_collector.md
+│   │   ├── v1.0_scripts_refactor_collector.md
+│   │   └── v2.0_scraper_design.md
 │   └── release/
-│       └── v1.0.0.md
+│       ├── v1.0.0.md
+│       └── v2.0.0.md
+├── CHANGELOG.md                    # [自动生成] 数据变更日志
 ├── REPORT.md                       # [自动生成] 人类可读的数据总表
 ├── .env                            # 【不提交】云端 Aura 连接配置
 ├── .env.local                      # 【不提交】本地 Desktop 连接配置
@@ -59,6 +73,43 @@ marvel-universe-data/
 ---
 
 ## 数据收集
+
+### 爬虫数据采集
+
+系统内置自动爬虫模块 `scripts/scraper/`，可从 Wikipedia 和 Marvel Fandom Wiki 自动发现角色、抓取结构化信息、推断人物关系，输出为标准 JSON 格式供下游管道处理。
+
+**CLI 入口：** `python3 scripts/scraper/discover.py`
+
+```bash
+# 爬取单个主题 + 自动导入数据库
+python3 scripts/scraper/discover.py --theme street-heroes --count 15 --merge
+
+# 爬取多个主题（逗号分隔），角色合并去重
+python3 scripts/scraper/discover.py --theme street-heroes,cosmic,villains --count 10 --merge
+
+# 随机 2 个主题（cron 推荐用法）
+python3 scripts/scraper/discover.py --random 2 --count 10 --merge
+
+# 仅生成 JSON 不导入，后续手动处理
+python3 scripts/scraper/discover.py --theme street-heroes --count 15
+python3 scripts/collector/run.py --scraped scheduled_data/crawled/2026-06-29_street-heroes.json
+```
+
+**参数说明：**
+
+| 参数 | 说明 |
+|------|------|
+| `--theme` | 主题，逗号分隔多个（如 `street-heroes,cosmic`） |
+| `--random N` | 从所有主题中随机选 N 个爬取（与 `--theme` 互斥） |
+| `--count` | 每个主题发现多少个角色（默认 10） |
+| `--merge` | 爬完后自动调用 `run.py --scraped` 导入数据库 |
+| `--list-themes` | 列出所有可用主题 |
+
+**预定义主题：** `street-heroes`、`cosmic`、`mutants`、`villains`、`magic`、`mcu-only`、`avengers-expand`、`xmen-expand`
+
+**输出位置：** 爬取结果 JSON 保存在 `scheduled_data/crawled/YYYY-MM-DD_主题.json`
+
+**自动导入流程：** 使用 `--merge` 时，爬虫内部自动调用 `run.py --scraped` → 生成 Cypher 文件 → 双库同步。
 
 ### 命令参考
 
@@ -113,21 +164,30 @@ MERGE (c984)-[:成员]->(t1);
 
 ## 定时任务设置（Cron）
 
-推荐使用 `run.py --retry`，只重试未同步内容（不会意外触发批量生成）：
+### 推荐：定时爬取新数据
+
+每周日凌晨 3 点，随机爬取 2 个主题并自动导入。使用 `--random` 避免主题偏好，长期保持数据分布均匀。
+
+```cron
+# 每周日凌晨 3 点随机爬取 2 个主题，各 10 个角色，自动导入
+0 3 * * 0 cd /path/to/marvel-universe-data && python3 scripts/scraper/discover.py --random 2 --count 10 --merge >> scheduled_data/sync.log 2>&1
+```
+
+### 备用：重试失败的同步
+
+如果某个同步因网络等问题失败，`--retry` 只会尝试未入库的内容：
 
 ```cron
 # 每 4 小时重试未入库的内容（幂等安全）
 0 */4 * * * cd /path/to/marvel-universe-data && python3 scripts/collector/run.py --retry >> scheduled_data/sync.log 2>&1
 ```
 
-如果需要定时生成新批次（`data_definitions.py` 中定义了下游批次时）：
+### 注意事项
 
-```cron
-# 每日凌晨生成下一批并同步双库
-0 3 * * * cd /path/to/marvel-universe-data && python3 scripts/collector/run.py >> scheduled_data/sync.log 2>&1
-```
-
-所有批次完成后自动输出"全部完成"并跳过，不会做无效工作。
+- **频率建议**：爬虫每周 1-2 次即可（Wikipedia 和 Fandom 不需要天级同步）
+- **`--count` 不宜过大**：建议每主题 5-15 个，避免一次跑太久
+- **`--merge` 必须加**：否则爬了不导入等于白爬
+- **失败容忍**：某个页面抓取失败自动跳过，不阻塞整次运行
 
 ---
 
@@ -141,6 +201,12 @@ python3 scripts/collector/run.py
 
 # 仅同步已有未入库内容
 python3 scripts/collector/run.py --retry
+
+# 导入爬虫产出的 JSON 数据
+python3 scripts/collector/run.py --scraped scheduled_data/crawled/2026-06-29_street-heroes.json
+
+# 仅生成 Cypher 不导入（预览用）
+python3 scripts/collector/run.py --scraped scheduled_data/crawled/xxx.json --generate-only
 
 # 强制全量重跑（幂等安全）
 python3 scripts/collector/run.py --force
@@ -173,28 +239,41 @@ cypher-shell -a bolt://127.0.0.1:7687 -u neo4j -p neo4jneo4j -d universe -f fixe
 
 ## 添加新数据
 
-编辑 `scripts/collector/data_definitions.py`，向 `BATCHES` 列表追加新批次：
+### 方式一：创建 JSON 批次文件（推荐）
 
-```python
+`data_definitions.py` 已重构为纯加载器，自动扫描 `scheduled_data/curated/` 目录下的所有 JSON 文件。添加新数据只需在 `curated/` 下创建新的 JSON 文件：
+
+```json
 {
-    "name": "My New Batch",
-    "characters": [
-        {
-            "name_en": "NewHero",         # 英文名（唯一标识）
-            "name": "新英雄",              # 中文名
-            "real_name": "...",
-            "species": "...",
-            "first_appearance": "...",
-            "abilities": "...",
-        },
-    ],
-    "relationships": [
-        # (源实体名, 源标签, 关系, 目标实体名, 目标标签, 是否双向)
-        ("NewHero", "Character", "盟友", "Spider-Man", "Character", True),
-        ("NewHero", "Character", "成员", "Avengers", "Team", False),
-    ],
+  "name": "My New Batch",
+  "characters": [
+    {
+      "name_en": "NewHero",
+      "name": "新英雄",
+      "real_name": "...",
+      "species": "...",
+      "first_appearance": "...",
+      "abilities": "..."
+    }
+  ],
+  "relationships": [
+    ["NewHero", "Character", "盟友", "Spider-Man", "Character", true],
+    ["NewHero", "Character", "成员", "Avengers", "Team", false]
+  ]
 }
 ```
+
+> **注意：** JSON 中使用数组代替 Python tuple，`true`/`false` 代替 `True`/`False`。下游通过索引访问（`rel[:5]`、`rel[5]`），行为一致。
+
+创建文件后直接运行 `python3 scripts/collector/run.py` 即可自动加载并处理。
+
+### 方式二：通过爬虫自动采集
+
+```bash
+python3 scripts/scraper/discover.py --theme street-heroes --count 15 --merge
+```
+
+详见「爬虫数据采集」章节。
 
 ### 关系类型说明
 
