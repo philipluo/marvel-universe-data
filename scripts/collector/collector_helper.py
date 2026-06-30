@@ -13,6 +13,7 @@ import json
 import os
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -28,8 +29,9 @@ ROOT = Path(__file__).resolve().parents[2]
 FIXED_DIR = ROOT / "fixed"
 SCHEDULED_DIR = ROOT / "scheduled_data"
 INDEX_FILE = SCHEDULED_DIR / "index.json"
+CHANGELOG_PATH = ROOT / "CHANGELOG.md"
 
-# 关系标签（统一中文）
+# 中文标签映射（显示用）
 REL_LABELS = {
     "MEMBER_OF": "成员",
     "成员": "成员",
@@ -47,6 +49,16 @@ REL_LABELS = {
     "使者": "使者",
     "APPEARS_IN": "出演",
     "出演": "出演",
+}
+
+# 实体标签中文名（显示用）
+LABEL_CN = {
+    "Character": "角色",
+    "Team": "团队",
+    "Location": "地点",
+    "Movie": "电影",
+    "Event": "事件",
+    "Item": "物品",
 }
 
 # 双向关系类型（自动生成反向）
@@ -649,6 +661,102 @@ def generate_report() -> str:
 
 
 # ============================================================
+# CHANGELOG 输出
+# ============================================================
+
+def append_changelog(
+    batch_name: str,
+    batch_num: int,
+    new_entities: list[dict],
+    skipped_entities: list[tuple[str, str, str]],  # (display_name, var, label)
+    added_rel_defs: list[tuple],
+    skipped_rel_count: int,
+    source: str | None = None,
+):
+    """
+    向 CHANGELOG.md 顶部追加一条日志条目。
+    """
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    lines = []
+    if source:
+        lines.append(f"\n## {now} — 爬取: {batch_name}（Batch {batch_num}）")
+        lines.append(f"\n**来源**: `{source}`")
+    else:
+        lines.append(f"\n## {now} — 批次 {batch_num}: {batch_name}")
+
+    added_count = len(new_entities)
+    if added_count:
+        lines.append(f"\n### ✅ 新增实体（+{added_count}）")
+        by_label: dict[str, list[dict]] = {}
+        for ent in new_entities:
+            by_label.setdefault(ent["label"], []).append(ent)
+        for label in ("Character", "Team", "Location", "Movie", "Event", "Item"):
+            items = by_label.get(label)
+            if not items:
+                continue
+            cn = LABEL_CN.get(label, label)
+            lines.append(f"\n**{cn}**")
+            for item in items:
+                props = item["props"]
+                var = item["var"]
+                display = (
+                    props.get("name")
+                    or props.get("name_en")
+                    or props.get("title")
+                    or props.get("event_name")
+                    or ""
+                )
+                extra = ""
+                if label == "Character":
+                    extra = f" — {props.get('real_name', '?')}  |  {props.get('species', '?')}"
+                lines.append(f"- {var} — {display}{extra}")
+
+    skipped_count = len(skipped_entities)
+    if skipped_count:
+        lines.append(f"\n### ⏭️ 跳过（已存在，+{skipped_count}）")
+        by_label_skip: dict[str, list[str]] = {}
+        for display_name, var, label in skipped_entities:
+            by_label_skip.setdefault(label, []).append(f"{display_name}（{var}）")
+        for label in ("Character", "Team", "Location", "Movie", "Event", "Item"):
+            items = by_label_skip.get(label)
+            if not items:
+                continue
+            cn = LABEL_CN.get(label, label)
+            lines.append(f"\n**{cn}**: {', '.join(items)}")
+
+    rel_added = len(added_rel_defs)
+    if rel_added:
+        lines.append(f"\n### 🔗 新增关系（+{rel_added}）")
+        for rel_def in added_rel_defs:
+            src_name, _, rel_type, tgt_name = rel_def[:4]
+            rel_cn = REL_LABELS.get(rel_type, rel_type)
+            lines.append(f"- {src_name} → {rel_cn} → {tgt_name}")
+
+    if skipped_rel_count:
+        lines.append(f"\n### ⚠️ 跳过关系（{skipped_rel_count} 条 — 源/目标缺失）")
+
+    lines.append("\n---")
+
+    entry = "\n".join(lines) + "\n"
+
+    # 向文件顶部（标题之后）插入
+    title_line = "# 数据更新日志"
+    if CHANGELOG_PATH.exists():
+        existing = CHANGELOG_PATH.read_text(encoding="utf-8")
+        if existing.startswith(title_line):
+            rest = existing[len(title_line) :].lstrip("\n")
+            content = f"{title_line}\n\n{entry}\n{rest}"
+        else:
+            content = f"{title_line}\n\n{entry}\n{existing}"
+    else:
+        content = f"{title_line}\n\n{entry}\n"
+
+    CHANGELOG_PATH.write_text(content, encoding="utf-8")
+    print("  📝 CHANGELOG.md 已更新")
+
+
+# ============================================================
 # 批次生成与导入（从 run_batch.py 迁移而来）
 # ============================================================
 
@@ -666,6 +774,256 @@ def _find_props(existing: dict, name: str, label: str) -> dict:
         return {"item_name": name}
     else:
         return {"name": name}
+
+
+def _process_batch_data(
+    batch_def: dict,
+    existing: dict,
+    id_counters: dict,
+) -> tuple:
+    """
+    处理批次的实体和关系数据：去重 → ID 分配 → Cypher 生成。
+
+    Returns:
+        new_entities, skipped_entities, entity_var_map,
+        new_relationships, added_rel_defs, skipped_rels,
+        final_id_counters
+    """
+    new_entities = []
+    skipped_entities: list[tuple[str, str, str]] = []
+    entity_var_map: dict[str, str] = {}
+    new_relationships = []
+    added_rel_defs: list[tuple] = []
+    skipped_rels = 0
+
+    # --- 角色 ---
+    for char_def in batch_def.get("characters", []):
+        name_en = char_def.get("name_en", "")
+        if not name_en:
+            continue
+        existing_var = existing.get("Character", {}).get(name_en)
+        if existing_var:
+            print(f"  ⏭️  角色已存在: {name_en} (var: {existing_var})")
+            entity_var_map[name_en] = existing_var
+            skipped_entities.append((char_def.get('name', '') or name_en, existing_var, "Character"))
+            continue
+        var = f"c{id_counters['c']}"
+        id_counters["c"] += 1
+        entity_var_map[name_en] = var
+        new_entities.append({"var": var, "label": "Character", "props": dict(char_def)})
+        existing.setdefault("Character", {})[name_en] = var
+        print(f"  ✅ 新角色: {var} → {name_en} ({char_def.get('name', '')})")
+
+    # --- 团队 ---
+    for team_def in batch_def.get("teams", []):
+        name_en = team_def.get("name_en", "")
+        if not name_en:
+            continue
+        existing_var = existing.get("Team", {}).get(name_en)
+        if existing_var:
+            print(f"  ⏭️  团队已存在: {name_en} (var: {existing_var})")
+            entity_var_map[name_en] = existing_var
+            skipped_entities.append((team_def.get('name', '') or name_en, existing_var, "Team"))
+            continue
+        var = f"t{id_counters['t']}"
+        id_counters["t"] += 1
+        entity_var_map[name_en] = var
+        new_entities.append({"var": var, "label": "Team", "props": dict(team_def)})
+        existing.setdefault("Team", {})[name_en] = var
+        print(f"  ✅ 新团队: {var} → {name_en} ({team_def.get('name', '')})")
+
+    # --- 地点 ---
+    for loc_def in batch_def.get("locations", []):
+        name = loc_def.get("name", "")
+        if not name:
+            continue
+        existing_var = existing.get("Location", {}).get(name)
+        if existing_var:
+            print(f"  ⏭️  地点已存在: {name} (var: {existing_var})")
+            entity_var_map[name] = existing_var
+            skipped_entities.append((name, existing_var, "Location"))
+            continue
+        var = f"l{id_counters['l']}"
+        id_counters["l"] += 1
+        entity_var_map[name] = var
+        new_entities.append({"var": var, "label": "Location", "props": dict(loc_def)})
+        existing.setdefault("Location", {})[name] = var
+        print(f"  ✅ 新地点: {var} → {name}")
+
+    # --- 电影 ---
+    for movie_def in batch_def.get("movies", []):
+        title = movie_def.get("title", "")
+        if not title:
+            continue
+        existing_var = existing.get("Movie", {}).get(title)
+        if existing_var:
+            print(f"  ⏭️  电影已存在: {title} (var: {existing_var})")
+            entity_var_map[title] = existing_var
+            skipped_entities.append((title, existing_var, "Movie"))
+            continue
+        var = f"m{id_counters['m']}"
+        id_counters["m"] += 1
+        entity_var_map[title] = var
+        new_entities.append({"var": var, "label": "Movie", "props": dict(movie_def)})
+        existing.setdefault("Movie", {})[title] = var
+        print(f"  ✅ 新电影: {var} → {title}")
+
+    # --- 事件 ---
+    for event_def in batch_def.get("events", []):
+        event_name = event_def.get("event_name", "")
+        if not event_name:
+            continue
+        existing_var = existing.get("Event", {}).get(event_name)
+        if existing_var:
+            print(f"  ⏭️  事件已存在: {event_name} (var: {existing_var})")
+            entity_var_map[event_name] = existing_var
+            skipped_entities.append((event_name, existing_var, "Event"))
+            continue
+        var = f"e{id_counters['e']}"
+        id_counters["e"] += 1
+        entity_var_map[event_name] = var
+        new_entities.append({"var": var, "label": "Event", "props": dict(event_def)})
+        existing.setdefault("Event", {})[event_name] = var
+        print(f"  ✅ 新事件: {var} → {event_name}")
+
+    # --- 物品 ---
+    for item_def in batch_def.get("items", []):
+        item_key = item_def.get("item_name", item_def.get("name", ""))
+        if not item_key:
+            continue
+        existing_var = existing.get("Item", {}).get(item_key)
+        if existing_var:
+            print(f"  ⏭️  物品已存在: {item_key} (var: {existing_var})")
+            entity_var_map[item_key] = existing_var
+            skipped_entities.append((item_key, existing_var, "Item"))
+            continue
+        var = f"i{id_counters['i']}"
+        id_counters["i"] += 1
+        entity_var_map[item_key] = var
+        new_entities.append({"var": var, "label": "Item", "props": dict(item_def)})
+        existing.setdefault("Item", {})[item_key] = var
+        print(f"  ✅ 新物品: {var} → {item_key}")
+
+    # --- 关系 ---
+    for rel_def in batch_def.get("relationships", []):
+        src_name, src_label, rel_type, tgt_name, tgt_label = rel_def[:5]
+        bidirectional = rel_def[5] if len(rel_def) > 5 else False
+        src_var = existing.get(src_label, {}).get(src_name)
+        tgt_var = existing.get(tgt_label, {}).get(tgt_name)
+        if not src_var:
+            print(f"  ⚠️  关系源未找到: {src_name} ({src_label})")
+            skipped_rels += 1
+            continue
+        if not tgt_var:
+            print(f"  ⚠️  关系目标未找到: {tgt_name} ({tgt_label})")
+            skipped_rels += 1
+            continue
+        stmts = build_relationship_statement(
+            src_var, src_label, _find_props(existing, src_name, src_label),
+            rel_type,
+            tgt_var, tgt_label, _find_props(existing, tgt_name, tgt_label),
+            bidirectional,
+        )
+        new_relationships.append(stmts)
+        added_rel_defs.append(rel_def)
+
+    return (new_entities, skipped_entities, entity_var_map,
+            new_relationships, added_rel_defs, skipped_rels,
+            dict(id_counters))
+
+
+def _after_process_hook(
+    batch_index: int,
+    batch_name: str,
+    batch_def: dict,
+    state: dict,
+    new_entities: list,
+    skipped_entities: list,
+    new_relationships: list,
+    added_rel_defs: list,
+    skipped_rels: int,
+    id_counters: dict,
+    import_after: bool = False,
+    source: str | None = None,
+) -> bool:
+    """
+    处理 _process_batch_data 返回后的公共收尾逻辑：
+    写入 Cypher 文件、更新 index.json、changelog、报表。
+    返回 True 表示成功，False 表示无新增数据。
+    """
+    if not new_entities and not new_relationships:
+        print(f"\n📭 批次 {batch_index} 没有新增数据（所有实体已存在）")
+        state.setdefault("completed_batches", []).append(str(batch_index))
+        save_batch_state(state)
+        return False
+
+    batch_dir = write_batch_files(batch_index, new_entities, new_relationships)
+    print(f"\n📁 写入: {batch_dir}")
+
+    errors = validate_batch_dir(batch_dir)
+    if errors:
+        print("\n⚠️  验证发现以下问题:")
+        for err in errors:
+            print(f"  {err}")
+    else:
+        print("✅ 格式验证通过")
+
+    state["latest_batch"] = batch_index
+    state.setdefault("completed_batches", [])
+    if str(batch_index) not in state["completed_batches"]:
+        state["completed_batches"].append(str(batch_index))
+    state["total_entities_added"] = state.get("total_entities_added", 0) + len(new_entities)
+    state["next_ids"] = {p: id_counters[p] for p in ("c", "t", "l", "m", "e", "i")}
+
+    # 如果来自爬虫，记录 scraped_runs
+    if source:
+        run_id = source.replace("scheduled_data/", "").replace(".json", "")
+        scraped_runs = state.setdefault("scraped_runs", [])
+        scraped_runs.append({
+            "id": run_id,
+            "source": source,
+            "batch_num": batch_index,
+            "time": datetime.now().isoformat(timespec="seconds"),
+            "entities_added": len(new_entities),
+            "entities_skipped": len(skipped_entities),
+            "relationships_added": len(new_relationships),
+            "relationships_skipped": skipped_rels,
+        })
+
+    save_batch_state(state)
+
+    # 写入 changelog
+    try:
+        append_changelog(
+            batch_name=batch_name,
+            batch_num=batch_index,
+            new_entities=new_entities,
+            skipped_entities=skipped_entities,
+            added_rel_defs=added_rel_defs,
+            skipped_rel_count=skipped_rels,
+            source=source,
+        )
+    except Exception as e:
+        print(f"  ⚠️ CHANGELOG 写入失败: {e}")
+
+    print(f"\n📊 批次统计:")
+    print(f"  新增实体: {len(new_entities)}")
+    print(f"  新增关系: {len(new_relationships)}")
+    print(f"  跳过实体: {len(skipped_entities)}")
+    print(f"  跳过关系: {skipped_rels}")
+    print(f"  累计实体: {state['total_entities_added']}")
+
+    if import_after:
+        import_batch_to_neo4j(batch_index, batch_dir)
+
+    print("\n📝 更新报告...")
+    try:
+        generate_report()
+        print("✅ REPORT.md 已更新")
+    except Exception as e:
+        print(f"⚠️ 报告生成失败: {e}")
+
+    return True
 
 
 def generate_batch(batch_index: int, import_after: bool = False) -> bool:
@@ -704,185 +1062,78 @@ def generate_batch(batch_index: int, import_after: bool = False) -> bool:
         "i": next_ids.get("i", 215),
     }
 
-    new_entities = []
-    skipped_entities = 0
-    entity_var_map: dict[str, str] = {}
+    # 核心处理
+    (new_entities, skipped_entities, _entity_var_map,
+     new_relationships, added_rel_defs, skipped_rels,
+     id_counters) = _process_batch_data(batch_def, existing, id_counters)
 
-    # --- 角色 ---
-    for char_def in batch_def.get("characters", []):
-        name_en = char_def.get("name_en", "")
-        if not name_en:
-            continue
-        existing_var = existing.get("Character", {}).get(name_en)
-        if existing_var:
-            print(f"  ⏭️  角色已存在: {name_en} (var: {existing_var})")
-            entity_var_map[name_en] = existing_var
-            skipped_entities += 1
-            continue
-        var = f"c{id_counters['c']}"
-        id_counters["c"] += 1
-        entity_var_map[name_en] = var
-        new_entities.append({"var": var, "label": "Character", "props": dict(char_def)})
-        existing.setdefault("Character", {})[name_en] = var
-        print(f"  ✅ 新角色: {var} → {name_en} ({char_def.get('name', '')})")
+    # 公共收尾
+    return _after_process_hook(
+        batch_index, batch_name, batch_def, state,
+        new_entities, skipped_entities, new_relationships,
+        added_rel_defs, skipped_rels, id_counters,
+        import_after=import_after,
+    )
 
-    # --- 团队 ---
-    for team_def in batch_def.get("teams", []):
-        name_en = team_def.get("name_en", "")
-        if not name_en:
-            continue
-        existing_var = existing.get("Team", {}).get(name_en)
-        if existing_var:
-            print(f"  ⏭️  团队已存在: {name_en} (var: {existing_var})")
-            entity_var_map[name_en] = existing_var
-            skipped_entities += 1
-            continue
-        var = f"t{id_counters['t']}"
-        id_counters["t"] += 1
-        entity_var_map[name_en] = var
-        new_entities.append({"var": var, "label": "Team", "props": dict(team_def)})
-        existing.setdefault("Team", {})[name_en] = var
-        print(f"  ✅ 新团队: {var} → {name_en} ({team_def.get('name', '')})")
 
-    # --- 地点 ---
-    for loc_def in batch_def.get("locations", []):
-        name = loc_def.get("name", "")
-        if not name:
-            continue
-        existing_var = existing.get("Location", {}).get(name)
-        if existing_var:
-            print(f"  ⏭️  地点已存在: {name} (var: {existing_var})")
-            entity_var_map[name] = existing_var
-            skipped_entities += 1
-            continue
-        var = f"l{id_counters['l']}"
-        id_counters["l"] += 1
-        entity_var_map[name] = var
-        new_entities.append({"var": var, "label": "Location", "props": dict(loc_def)})
-        existing.setdefault("Location", {})[name] = var
-        print(f"  ✅ 新地点: {var} → {name}")
+def generate_batch_from_data(
+    batch_data: dict,
+    source: str | None = None,
+    import_after: bool = False,
+) -> bool:
+    """
+    从原始 batch dict 生成 Cypher 文件（非 BATCHES 列表）。
 
-    # --- 电影 ---
-    for movie_def in batch_def.get("movies", []):
-        title = movie_def.get("title", "")
-        if not title:
-            continue
-        existing_var = existing.get("Movie", {}).get(title)
-        if existing_var:
-            print(f"  ⏭️  电影已存在: {title} (var: {existing_var})")
-            entity_var_map[title] = existing_var
-            skipped_entities += 1
-            continue
-        var = f"m{id_counters['m']}"
-        id_counters["m"] += 1
-        entity_var_map[title] = var
-        new_entities.append({"var": var, "label": "Movie", "props": dict(movie_def)})
-        existing.setdefault("Movie", {})[title] = var
-        print(f"  ✅ 新电影: {var} → {title}")
+    自动分配下一个 batch 编号（从 index.json 的 completed_batches 取最大值 +1），
+    然后复用 _process_batch_data + _after_process_hook 核心逻辑。
 
-    # --- 事件 ---
-    for event_def in batch_def.get("events", []):
-        event_name = event_def.get("event_name", "")
-        if not event_name:
-            continue
-        existing_var = existing.get("Event", {}).get(event_name)
-        if existing_var:
-            print(f"  ⏭️  事件已存在: {event_name} (var: {existing_var})")
-            entity_var_map[event_name] = existing_var
-            skipped_entities += 1
-            continue
-        var = f"e{id_counters['e']}"
-        id_counters["e"] += 1
-        entity_var_map[event_name] = var
-        new_entities.append({"var": var, "label": "Event", "props": dict(event_def)})
-        existing.setdefault("Event", {})[event_name] = var
-        print(f"  ✅ 新事件: {var} → {event_name}")
+    Args:
+        batch_data: 符合 BATCH 格式的 dict（含 characters/teams/relationships 等）
+        source: 来源标识，如 "crawled/2026-06-29_street-heroes.json"
+        import_after: 是否生成后立即导入
 
-    # --- 物品 ---
-    for item_def in batch_def.get("items", []):
-        item_key = item_def.get("item_name", item_def.get("name", ""))
-        if not item_key:
-            continue
-        existing_var = existing.get("Item", {}).get(item_key)
-        if existing_var:
-            print(f"  ⏭️  物品已存在: {item_key} (var: {existing_var})")
-            entity_var_map[item_key] = existing_var
-            skipped_entities += 1
-            continue
-        var = f"i{id_counters['i']}"
-        id_counters["i"] += 1
-        entity_var_map[item_key] = var
-        new_entities.append({"var": var, "label": "Item", "props": dict(item_def)})
-        existing.setdefault("Item", {})[item_key] = var
-        print(f"  ✅ 新物品: {var} → {item_key}")
+    Returns: True 表示生成了新数据
+    """
+    batch_name = batch_data.get("name", source or "爬虫批次")
 
-    # --- 关系 ---
-    new_relationships = []
-    skipped_rels = 0
-    for rel_def in batch_def.get("relationships", []):
-        src_name, src_label, rel_type, tgt_name, tgt_label = rel_def[:5]
-        bidirectional = rel_def[5] if len(rel_def) > 5 else False
-        src_var = existing.get(src_label, {}).get(src_name)
-        tgt_var = existing.get(tgt_label, {}).get(tgt_name)
-        if not src_var:
-            print(f"  ⚠️  关系源未找到: {src_name} ({src_label})")
-            skipped_rels += 1
-            continue
-        if not tgt_var:
-            print(f"  ⚠️  关系目标未找到: {tgt_name} ({tgt_label})")
-            skipped_rels += 1
-            continue
-        stmts = build_relationship_statement(
-            src_var, src_label, _find_props(existing, src_name, src_label),
-            rel_type,
-            tgt_var, tgt_label, _find_props(existing, tgt_name, tgt_label),
-            bidirectional,
-        )
-        new_relationships.append(stmts)
+    # 自动分配批次号
+    state = get_batch_state()
+    completed = [int(b) for b in state.get("completed_batches", []) if b.isdigit()]
+    batch_index = max(completed) + 1 if completed else 1
 
-    if not new_entities and not new_relationships:
-        print(f"\n📭 批次 {batch_index} 没有新增数据（所有实体已存在）")
-        state.setdefault("completed_batches", []).append(str(batch_index))
-        save_batch_state(state)
-        return False
-
-    batch_dir = write_batch_files(batch_index, new_entities, new_relationships)
-    print(f"\n📁 写入: {batch_dir}")
-
-    errors = validate_batch_dir(batch_dir)
-    if errors:
-        print("\n⚠️  验证发现以下问题:")
-        for err in errors:
-            print(f"  {err}")
+    print(f"\n{'='*60}")
+    if source:
+        print(f"  爬取导入: {batch_name} → Batch {batch_index}（来自 {source}）")
     else:
-        print("✅ 格式验证通过")
+        print(f"  批次 {batch_index}: {batch_name}")
+    print(f"{'='*60}")
 
-    state["latest_batch"] = batch_index
-    state.setdefault("completed_batches", [])
-    if str(batch_index) not in state["completed_batches"]:
-        state["completed_batches"].append(str(batch_index))
-    state["total_entities_added"] = state.get("total_entities_added", 0) + len(new_entities)
-    state["next_ids"] = {p: id_counters[p] for p in ("c", "t", "l", "m", "e", "i")}
-    save_batch_state(state)
+    # 扫描已有实体用于去重
+    existing = get_all_existing_entities()
+    next_ids = get_next_ids(force_refresh=True)
 
-    print(f"\n📊 批次统计:")
-    print(f"  新增实体: {len(new_entities)}")
-    print(f"  新增关系: {len(new_relationships)}")
-    print(f"  跳过实体: {skipped_entities}")
-    print(f"  跳过关系: {skipped_rels}")
-    print(f"  累计实体: {state['total_entities_added']}")
+    id_counters = {
+        "c": next_ids.get("c", 984),
+        "t": next_ids.get("t", 17),
+        "l": next_ids.get("l", 34),
+        "m": next_ids.get("m", 30),
+        "e": next_ids.get("e", 21),
+        "i": next_ids.get("i", 215),
+    }
 
-    if import_after:
-        import_batch_to_neo4j(batch_index, batch_dir)
+    # 核心处理（与 generate_batch 完全一致）
+    (new_entities, skipped_entities, _entity_var_map,
+     new_relationships, added_rel_defs, skipped_rels,
+     id_counters) = _process_batch_data(batch_data, existing, id_counters)
 
-    print("\n📝 更新报告...")
-    try:
-        generate_report()
-        print("✅ REPORT.md 已更新")
-    except Exception as e:
-        print(f"⚠️ 报告生成失败: {e}")
-
-    return True
+    # 公共收尾（写入文件 + 状态 + changelog + 报表）
+    return _after_process_hook(
+        batch_index, batch_name, batch_data, state,
+        new_entities, skipped_entities, new_relationships,
+        added_rel_defs, skipped_rels, id_counters,
+        import_after=import_after,
+        source=source,
+    )
 
 
 def import_batch_to_neo4j(batch_index: int, batch_dir: Path = None):

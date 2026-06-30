@@ -16,3 +16,7 @@ __pycache__/
 *.tmp
 *.swp
 *~
+
+# 爬虫自动生成
+scheduled_data/crawled/
+scheduled_data/crawled_cache/

@@ -1,0 +1,2 @@
+Auto-generated from data_definitions.py
+Do not edit manually - run export_batches script

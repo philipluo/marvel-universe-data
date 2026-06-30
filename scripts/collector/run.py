@@ -37,6 +37,7 @@ ENV_LOCAL = ROOT / ".env.local"
 sys.path.insert(0, str(ROOT / "scripts" / "collector"))
 from collector_helper import (  # noqa: E402
     get_batch_state, save_batch_state, generate_batch, print_status,
+    generate_batch_from_data,
 )
 from data_definitions import BATCHES  # noqa: E402
 
@@ -366,8 +367,32 @@ def main():
     parser.add_argument("--list-batches", action="store_true", help="列出所有批次定义")
     parser.add_argument("--status", action="store_true", help="查看同步状态")
     parser.add_argument("--report", action="store_true", help="仅更新 REPORT.md")
+    parser.add_argument("--scraped", type=str, metavar="JSON_PATH",
+                        help="导入爬虫产物 JSON 文件，如 scheduled_data/crawled/xxx.json")
 
     args = parser.parse_args()
+
+    # --scraped 模式：从爬虫 JSON 生成批次（与 --batch 互斥）
+    if args.scraped:
+        scraped_path = Path(args.scraped)
+        if not scraped_path.exists():
+            print(f"❌ 文件不存在: {scraped_path}")
+            sys.exit(1)
+        import json
+        batch_data = json.loads(scraped_path.read_text(encoding="utf-8"))
+        success = generate_batch_from_data(
+            batch_data,
+            source=str(scraped_path.relative_to(ROOT) if scraped_path.is_relative_to(ROOT) else scraped_path),
+            import_after=not args.generate_only,
+        )
+        if success and not args.generate_only:
+            # 强制 index.json 里的 import_log 同步（会由 cmd_run 完成）
+            import_log_state = read_index()
+            for target in ("cloud", "local"):
+                ensure_import_log(import_log_state, target)
+            write_index(import_log_state)
+            cmd_run(force=True)
+        return
 
     # 无需联网的子命令
     if args.status:
